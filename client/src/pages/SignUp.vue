@@ -49,6 +49,7 @@
 
 <script setup>
 import { ref } from "vue";
+import { useMeta } from "quasar";
 
 const email = ref("");
 const password = ref("");
@@ -76,6 +77,10 @@ const onSubmitForm = () => {
     console.log(valid.value);
   }
 };
+
+useMeta(() => {
+  return { title: "회원가입" };
+});
 </script>
 
 <style scoped>

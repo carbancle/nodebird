@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <q-card class="q-ma-sm q-pa-sm">
+    <q-card class="q-ma-sm q-pa-sm" v-if="!me">
       <q-form ref="form" @submit.prevent="onSubmitForm">
         <q-input
           v-model="email"
@@ -20,11 +20,19 @@
         <q-btn to="/sign-up">회원가입</q-btn>
       </q-form>
     </q-card>
+    <q-card class="q-ma-sm q-pa-sm">
+      <!-- <q-card class="q-ma-sm q-pa-sm" v-else> -->
+      <!-- {{ me.nickname }} 님 로그인되었습니다. -->
+      <q-btn @click="onLogOut">로그아웃</q-btn>
+    </q-card>
   </q-page>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import { useUserStore } from "../stores/user";
+
+const user = useUserStore();
 
 const valid = ref(false);
 const form = ref(null);
@@ -36,15 +44,26 @@ const emailRules = [
 ];
 const passwordRules = [(v) => !!v || "비밀번호는 필수입니다."];
 
+const me = computed(() => user.$state.me);
+console.log(me.value, " :: ? me");
+
 const onSubmitForm = () => {
   form.value.validate().then((success) => {
     if (success) {
       alert("로그인 시도!");
+      user.login({
+        email: email.value,
+        password: password.value,
+      });
     } else {
       alert("폼이 유효하지 않습니다.");
       console.log(valid.value);
     }
   });
+};
+
+const onLogOut = () => {
+  user.logOut();
 };
 </script>
 

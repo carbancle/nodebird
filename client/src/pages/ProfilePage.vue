@@ -27,13 +27,18 @@
 </template>
 
 <script setup>
-import FollowList from "~/components/FollowList.vue";
 import { ref } from "vue";
+import { useMeta } from "quasar";
+import FollowList from "../components/FollowList.vue";
 
 const nickname = ref("");
 const submitForm = () => {
   // 폼 제출 로직 구현
 };
+
+useMeta(() => {
+  return { title: "프로필" };
+});
 </script>
 
 <style scoped>

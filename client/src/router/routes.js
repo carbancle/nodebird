@@ -16,6 +16,11 @@ const routes = [
     component: () => import("src/layouts/DefaultLayout.vue"),
     children: [
       { path: "", component: () => import("src/pages/IndexPage.vue") },
+      { path: "sign-up", component: () => import("src/pages/SignUp.vue") },
+      {
+        path: "profile",
+        component: () => import("src/pages/ProfilePage.vue"),
+      },
     ],
   },
 ];
