@@ -1,7 +1,7 @@
 <template>
   <q-card style="margin-bottom: 20px">
     <q-card-section>
-      <q-form ref="form" v-model="valid" @submit.prevent="onSubmitForm">
+      <q-form ref="valid" @submit.prevent="onSubmitForm" @reset="onReset">
         <q-input
           v-model="content"
           type="textarea"
@@ -19,10 +19,10 @@
           <q-file
             class="custom-input-file q-mr-sm"
             v-model="imageInput"
-            @change="onChangeImages"
+            @update:model-value="onChangeImages"
             outlined
             :dense="true"
-            mutiple
+            multiple
             append
             label="이미지 업로드"
           />
@@ -57,42 +57,36 @@
 </template>
 <script setup>
 import { ref, computed } from "vue";
-import { api } from "boot/axios";
 import { useUserStore } from "src/stores/user";
 import { usePostStore } from "src/stores/posts";
 import "../css/quasar-custom.scss";
 
-const user = useUserStore();
-const post = usePostStore();
+const users = useUserStore();
+const posts = usePostStore();
 
-const valid = ref(false);
+const valid = ref(null);
 const hideDetails = ref(true);
 const successMessages = ref("");
 const success = ref(false);
 const content = ref("");
 const imageInput = ref(null);
 
-// todolist mapState로 가져온 me와 imagePaths 정보에 대한 이해 필요
-const users = computed(() => user.me);
-const posts = computed(() => post.imagePaths);
+const me = computed(() => users.me);
+const imagePaths = computed(() => posts.imagePaths);
 
-// computed: {
-//   ...mapState("users", ["me"]),
-//   ...mapState("posts", ["imagePaths"]),
-// },
 const onChangeTextarea = (value) => {
   if (value.length) {
-    this.hideDetails = true;
-    this.success = false;
-    this.successMessages = "";
+    hideDetails.value = true;
+    success.value = false;
+    successMessages.value = "";
   }
 };
 const onSubmitForm = async () => {
-  if (this.$refs.form.validate()) {
+  if (valid.value.validate()) {
     let data = {
-      content: this.content,
+      content: content.value,
       User: {
-        nickname: this.me.nickname,
+        nickname: me.value.nickname,
       },
       Comments: [],
       Images: [],
@@ -100,29 +94,31 @@ const onSubmitForm = async () => {
       createdAt: Date.now(),
     };
     try {
-      await post.addPost(data);
-
-      this.content = "";
-      this.hideDetails = false;
-      this.success = true;
-      this.successMessages = "게시글 등록 성공!";
+      await posts.addPost(data);
     } catch (err) {
       console.log(err);
     }
   }
 };
 
-const onChangeImages = (e) => {
-  console.log(e.target.files);
+const onReset = () => {
+  content.value = "";
+  hideDetails.value = false;
+  success.value = true;
+  successMessages.value = "게시글 등록 성공!";
+};
+
+const onChangeImages = () => {
   const imageFormData = new FormData();
-  [].forEach.call(e.target.files, (f) => {
+  [].forEach.call(imageInput.value, (f) => {
     imageFormData.append(`image`, f); // {image: [file1, file2]}
   });
-  post.uploadImages(imageFormData);
+  // console.log(imageFormData, " :: imageFormData");
+  posts.uploadImages(imageFormData);
 };
 
 const onRemoveImage = (index) => {
-  post.removeImagePath(index);
+  posts.removeImagePath(index);
 };
 </script>
 <style lang="scss" scoped></style>

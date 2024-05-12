@@ -20,7 +20,7 @@ export const usePostStore = defineStore({
     async addPost(payload) {
       const data = {
         content: payload.content,
-        imagePaths: state.imagePaths,
+        imagePaths: this.imagePaths,
       };
       const config = {
         withCredentials: true,
@@ -33,7 +33,7 @@ export const usePostStore = defineStore({
     },
     // todolist 삭제 함수부터는 확인 필요
     removePost(payload) {
-      const index = state.mainPosts.findIndex((v) => v.id === payload.id);
+      const index = this.mainPosts.findIndex((v) => v.id === payload.id);
       this.mainPosts.splice(index, 1);
     },
     loadPosts() {
@@ -56,10 +56,11 @@ export const usePostStore = defineStore({
       }
     },
     addComment(payload) {
-      const index = state.mainPosts.findIndex((v) => v.id === payload.postId);
-      state.mainPosts[index].Comments.unshift(payload);
+      const index = this.mainPosts.findIndex((v) => v.id === payload.postId);
+      this.mainPosts[index].Comments.unshift(payload);
     },
     async uploadImages(payload) {
+      console.log(payload, " :: payload");
       const config = {
         withCredentials: true,
       };
@@ -67,7 +68,7 @@ export const usePostStore = defineStore({
       const result = await api.post(`${url}/images`, payload, config);
       const json = result.data;
 
-      this.imagePaths = state.imagePaths.concat(json);
+      this.imagePaths = this.imagePaths.concat(json);
     },
     removeImagePath(payload) {
       this.imagePaths.splice(payload, 1);

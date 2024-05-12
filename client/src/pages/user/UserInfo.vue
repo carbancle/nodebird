@@ -2,6 +2,6 @@
   <div>Hello {{ name }}</div>
 </template>
 <script setup>
-const name = "Nuxt.js";
+const name = "vue.js";
 </script>
 <style></style>

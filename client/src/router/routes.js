@@ -21,6 +21,14 @@ const routes = [
         path: "profile",
         component: () => import("src/pages/ProfilePage.vue"),
       },
+      {
+        path: "user/:id",
+        component: () => import("src/pages/user/_id/index.vue"),
+      },
+      {
+        path: "post/:id",
+        component: () => import("src/pages/post/_id/index.vue"),
+      },
     ],
   },
 ];

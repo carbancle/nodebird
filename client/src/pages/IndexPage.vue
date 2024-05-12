@@ -16,13 +16,13 @@ import { usePostStore } from "src/stores/posts";
 import PostCard from "../components/PostCard.vue";
 import PostForm from "../components/PostForm.vue";
 
-onBeforeUnmount(() => {
-  window.removeEventListener("scroll", onScroll);
-});
-
 onMounted(() => {
   post.loadPosts();
   window.addEventListener("scroll", onScroll);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("scroll", onScroll);
 });
 
 const user = useUserStore();
