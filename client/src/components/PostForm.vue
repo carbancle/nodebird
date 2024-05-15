@@ -57,7 +57,7 @@
 </template>
 <script setup>
 import { ref, computed } from "vue";
-import { useUserStore } from "src/stores/user";
+import { useUserStore } from "src/stores/users";
 import { usePostStore } from "src/stores/posts";
 import "../css/quasar-custom.scss";
 

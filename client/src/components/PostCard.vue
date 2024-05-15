@@ -1,6 +1,6 @@
 <template>
   <q-card style="margin-bottom: 20px">
-    <!-- <q-img /> -->
+    <PostImages :images="post.Images || []" />
     <q-card-section>
       <div>
         <div class="text-h6">
@@ -46,24 +46,29 @@
 
 <script setup>
 import { ref } from "vue";
-import { useUserStore } from "src/stores/user";
+import { useUserStore } from "src/stores/users";
 import { usePostStore } from "src/stores/posts";
 import CommentForm from "../components/CommentForm.vue";
+import PostImages from "../components/PostImages.vue";
 
 const users = useUserStore();
 const posts = usePostStore();
 
 const props = defineProps(["post"]);
 const post = props.post;
+console.log(post);
 
 const commentOpened = ref(false);
 
 const onToggleComment = () => {
   commentOpened.value = !commentOpened.value;
+  if (!commentOpened.value) {
+    posts.loadComments({ postId: post.id });
+  }
 };
 const onEditPost = () => {};
 const onRemovePost = () => {
-  posts.remove(post.id);
+  posts.remove({ postId: post.id });
 };
 </script>
 

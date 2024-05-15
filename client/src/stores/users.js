@@ -22,6 +22,17 @@ export const useUserStore = defineStore({
     clearMe() {
       this.me = null;
     },
+    async loadUser() {
+      try {
+        const result = await api.get(`${url}`, { withCredentials: true });
+        const json = result.data;
+
+        this.setMe(json);
+        this.clearMe(json);
+      } catch (err) {
+        console.log(err);
+      }
+    },
     async signUp(payload) {
       const data = {
         email: payload.email,

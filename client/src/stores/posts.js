@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { api } from "boot/axios";
+import { throttle } from "quasar";
 
 const url = `http://localhost:3085/post`;
 
@@ -20,7 +21,7 @@ export const usePostStore = defineStore({
     async addPost(payload) {
       const data = {
         content: payload.content,
-        imagePaths: this.imagePaths,
+        image: this.imagePaths,
       };
       const config = {
         withCredentials: true,
@@ -32,32 +33,62 @@ export const usePostStore = defineStore({
       this.imagePaths = [];
     },
     // todolist 삭제 함수부터는 확인 필요
-    removePost(payload) {
-      const index = this.mainPosts.findIndex((v) => v.id === payload.id);
-      this.mainPosts.splice(index, 1);
-    },
-    loadPosts() {
-      if (this.hasMorePost) {
-        const diff = totalPosts - this.mainPosts.length; // 아직 안 불러온 게시글 수
-        const fakePosts = Array(diff > limit ? limit : diff)
-          .fill()
-          .map((v) => ({
-            id: Math.random().toString(),
-            User: {
-              id: 1,
-              nickname: "제로초",
-            },
-            content: `Hello infinite scrolling~ ${Math.random()}`,
-            Comments: [],
-            Images: [],
-          }));
-        this.mainPosts = this.mainPosts.concat(fakePosts);
-        this.hasMorePost = fakePosts.length === limit;
+    loadPosts: throttle(async function () {
+      try {
+        if (this.hasMorePost) {
+          const result = await api.get(
+            `${url}s?offset=${this.mainPosts.length}&limit=10`
+          );
+          const json = result.data;
+
+          this.mainPosts = this.mainPosts.concat(json);
+          this.hasMorePost = json.length === limit;
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }, 2000),
+    async removePost() {
+      try {
+        const result = await api.delete(`${url}/${payload.postId}`, {
+          withCredentials: true,
+        });
+        const json = result.data;
+
+        const index = this.mainPosts.findIndex((v) => v.id === json.id);
+        this.mainPosts.splice(index, 1);
+      } catch (err) {
+        console.log(err);
       }
     },
-    addComment(payload) {
-      const index = this.mainPosts.findIndex((v) => v.id === payload.postId);
-      this.mainPosts[index].Comments.unshift(payload);
+    async addComment(payload) {
+      try {
+        const result = await api.post(
+          `${url}/${payload.postId}/comment`,
+          {
+            content: payload.content,
+            imagePaths: this.imagePaths,
+          },
+          { withCredentials: true }
+        );
+        const json = result.data;
+
+        const index = this.mainPosts.findIndex((v) => v.id === json.postId);
+        this.mainPosts[index].Comments.unshift(json);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async loadComments() {
+      try {
+        const result = api.get(`${url}/${payload.postId}/comments`);
+        const json = result.data;
+
+        const index = this.mainPosts.findIndex((v) => v.id === json.postId);
+        this.mainPosts[index].Comments = json;
+      } catch (err) {
+        console.log(err);
+      }
     },
     async uploadImages(payload) {
       console.log(payload, " :: payload");

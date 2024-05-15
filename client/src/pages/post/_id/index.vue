@@ -8,12 +8,15 @@
 </template>
 <script setup>
 import { computed } from "vue";
+import { useRouter } from "vue-router";
 import { usePostStore } from "src/stores/posts";
 import PostCard from "../../../components/PostCard.vue";
+
+const $router = useRouter();
 
 const posts = usePostStore();
 
 const post = computed(() =>
-  posts.mainPosts.find((v) => v.id === parseInt(this.$route.params.id, 10))
+  posts.mainPosts.find((v) => v.id === parseInt($router.params.id, 10))
 );
 </script>

@@ -10,7 +10,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useQuasar, useMeta } from "quasar";
-import { useUserStore } from "src/stores/user";
+import { useUserStore } from "src/stores/users";
 import { usePostStore } from "src/stores/posts";
 import PostCard from "../../../components/PostCard.vue";
 import PostForm from "../../../components/PostForm.vue";

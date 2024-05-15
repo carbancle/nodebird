@@ -1,3 +1,16 @@
+import { useUserStore } from "src/stores/users";
+
+const isAuthenticated = (to, from, next) => {
+  const users = useUserStore();
+  const me = users.me;
+  if (!me) {
+    alert("로그인한 사용자만 이용가능합니다.");
+    return next("/");
+  } else {
+    return next();
+  }
+};
+
 const routes = [
   {
     path: "/main",
@@ -16,10 +29,14 @@ const routes = [
     component: () => import("src/layouts/DefaultLayout.vue"),
     children: [
       { path: "", component: () => import("src/pages/IndexPage.vue") },
-      { path: "sign-up", component: () => import("src/pages/SignUp.vue") },
+      {
+        path: "sign-up",
+        component: () => import("src/pages/SignUp.vue"),
+      },
       {
         path: "profile",
         component: () => import("src/pages/ProfilePage.vue"),
+        beforeEnter: [isAuthenticated],
       },
       {
         path: "user/:id",

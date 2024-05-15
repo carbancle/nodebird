@@ -26,14 +26,14 @@
 </template>
 <script setup>
 import { ref, computed } from "vue";
-import { useUserStore } from "src/stores/user";
+import { useUserStore } from "src/stores/users";
 import { usePostStore } from "src/stores/posts";
 
 const users = useUserStore();
 const posts = usePostStore();
 
 const props = defineProps(["postId"]);
-const postId = props.postId;
+const postId = ref(props.postId);
 
 const valid = ref(false);
 const content = ref("");
@@ -51,14 +51,10 @@ const onChangeTextarea = (value) => {
 };
 
 const onSubmitForm = () => {
-  if (form.value.validate()) {
+  if (valid.value.validate()) {
     const data = {
-      id: Date.now(),
       postId: postId.value,
       content: content.value,
-      User: {
-        nickname: me.value.nickname,
-      },
     };
 
     posts.addComment(data);

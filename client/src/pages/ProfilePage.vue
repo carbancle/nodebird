@@ -42,7 +42,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { useMeta } from "quasar";
-import { useUserStore } from "src/stores/user";
+import { useUserStore } from "src/stores/users";
 import "../css/quasar-custom.scss";
 import FollowList from "../components/FollowList.vue";
 

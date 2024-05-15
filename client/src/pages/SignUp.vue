@@ -49,9 +49,9 @@
 import { computed, ref } from "vue";
 import { useMeta } from "quasar";
 import { useRouter } from "vue-router";
-import { useUserStore } from "src/stores/user";
+import { useUserStore } from "src/stores/users";
 
-const router = useRouter();
+const $router = useRouter();
 const users = useUserStore();
 
 const valid = ref(null);
@@ -73,10 +73,6 @@ const passwordCheckRules = ref([
 ]);
 const termsRules = ref([(v) => !!v || "약관에 동의해야합니다."]);
 
-const me = computed(() => users.me);
-
-beforeRouteEnter;
-
 const onSubmitForm = () => {
   if (valid.value.validate()) {
     alert("회원가입 시도!");
@@ -87,7 +83,7 @@ const onSubmitForm = () => {
     };
     users.signUp(data).then(
       alert("회원가입이 완료되었습니다!"),
-      router.push({
+      $router.push({
         path: "/",
       })
     );
