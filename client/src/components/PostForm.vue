@@ -5,14 +5,13 @@
         <q-input
           v-model="content"
           type="textarea"
+          class="q-mb-sm"
           outlined
           auto-grow
           clearable
           label="어떤 신기한 일이 있었나요?"
-          :hide-details="hideDetails"
-          :success-messages="successMessages"
-          :success="success"
-          :rules="[(v) => !!v.trim() || '내용을 입력하세요']"
+          :hide-bottom-space="hideDetails"
+          :rules="[(v) => v === null || !!v.trim() || '내용을 입력하세요']"
           @input="onChangeTextarea"
         />
         <div class="row items-center">
@@ -23,7 +22,6 @@
             outlined
             :dense="true"
             multiple
-            append
             label="이미지 업로드"
           />
           <q-btn
@@ -34,6 +32,9 @@
             right
             >짹짹</q-btn
           >
+          <div v-if="isSuccess" class="q-ml-sm text-positive">
+            {{ successMessage }}
+          </div>
         </div>
         <div>
           <div
@@ -66,8 +67,8 @@ const posts = usePostStore();
 
 const valid = ref(null);
 const hideDetails = ref(true);
-const successMessages = ref("");
-const success = ref(false);
+const successMessage = ref("");
+const isSuccess = ref(false);
 const content = ref("");
 const imageInput = ref(null);
 
@@ -77,24 +78,19 @@ const imagePaths = computed(() => posts.imagePaths);
 const onChangeTextarea = (value) => {
   if (value.length) {
     hideDetails.value = true;
-    success.value = false;
-    successMessages.value = "";
+    isSuccess.value = false;
+    successMessage.value = "";
   }
 };
 const onSubmitForm = async () => {
   if (valid.value.validate()) {
     let data = {
       content: content.value,
-      User: {
-        nickname: me.value.nickname,
-      },
-      Comments: [],
-      Images: [],
-      id: Date.now(),
-      createdAt: Date.now(),
     };
     try {
+      console.log(data);
       await posts.addPost(data);
+      onReset();
     } catch (err) {
       console.log(err);
     }
@@ -102,19 +98,22 @@ const onSubmitForm = async () => {
 };
 
 const onReset = () => {
-  content.value = "";
+  isSuccess.value = true;
+  successMessage.value = "게시글 등록 성공!";
+  content.value = null;
   hideDetails.value = false;
-  success.value = true;
-  successMessages.value = "게시글 등록 성공!";
+  setTimeout(() => {
+    successMessage.value = "";
+  }, 2000);
 };
 
-const onChangeImages = () => {
+const onChangeImages = async () => {
   const imageFormData = new FormData();
   [].forEach.call(imageInput.value, (f) => {
     imageFormData.append(`image`, f); // {image: [file1, file2]}
   });
   // console.log(imageFormData, " :: imageFormData");
-  posts.uploadImages(imageFormData);
+  await posts.uploadImages(imageFormData);
 };
 
 const onRemoveImage = (index) => {

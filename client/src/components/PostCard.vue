@@ -21,8 +21,17 @@
       <q-btn @click="onToggleComment" flat color="orange">
         <q-icon name="mdi-comment-outline" />
       </q-btn>
-      <q-btn flat color="orange">
-        <q-icon name="mdi-dots-horizontal" />
+      <q-btn flat color="orange" icon="mdi-dots-horizontal">
+        <q-menu>
+          <q-list>
+            <q-item clickable @click="onRemovePost" v-close-popup>
+              <q-item-section dark color="red">삭제</q-item-section>
+            </q-item>
+            <q-item clickable @click="onEditPost" v-close-popup>
+              <q-item-section text color="orange">수정</q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
       </q-btn>
     </q-card-actions>
   </q-card>
@@ -56,19 +65,19 @@ const posts = usePostStore();
 
 const props = defineProps(["post"]);
 const post = props.post;
-console.log(post);
+// console.log(post);
 
 const commentOpened = ref(false);
 
-const onToggleComment = () => {
+const onToggleComment = async () => {
   commentOpened.value = !commentOpened.value;
   if (!commentOpened.value) {
-    posts.loadComments({ postId: post.id });
+    await posts.loadComments({ postId: post.id });
   }
 };
 const onEditPost = () => {};
-const onRemovePost = () => {
-  posts.remove({ postId: post.id });
+const onRemovePost = async () => {
+  await posts.removePost({ postId: post.id });
 };
 </script>
 

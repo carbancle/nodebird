@@ -48,14 +48,13 @@ export const usePostStore = defineStore({
         console.log(err);
       }
     }, 2000),
-    async removePost() {
+    async removePost(payload) {
       try {
-        const result = await api.delete(`${url}/${payload.postId}`, {
+        await api.delete(`${url}/${payload.postId}`, {
           withCredentials: true,
         });
-        const json = result.data;
 
-        const index = this.mainPosts.findIndex((v) => v.id === json.id);
+        const index = this.mainPosts.findIndex((v) => v.id === payload.postId);
         this.mainPosts.splice(index, 1);
       } catch (err) {
         console.log(err);
@@ -79,7 +78,7 @@ export const usePostStore = defineStore({
         console.log(err);
       }
     },
-    async loadComments() {
+    async loadComments(payload) {
       try {
         const result = api.get(`${url}/${payload.postId}/comments`);
         const json = result.data;

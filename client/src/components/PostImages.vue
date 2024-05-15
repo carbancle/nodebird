@@ -59,7 +59,7 @@ const images = props.images;
 
 const imageZoomed = ref(false);
 
-const cloasModal = () => {
+const closeModal = () => {
   imageZoomed.value = !imageZoomed.value;
 };
 

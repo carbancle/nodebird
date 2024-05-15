@@ -2,51 +2,38 @@
   <div id="image-zoom">
     <header>
       <h1>상세 이미지</h1>
-      <q-icon id="close-btn">mdi-close</q-icon>
+      <q-icon id="close-btn" name="mdi-close" @click="closeModal" />
     </header>
-    <div id="carusel-wrapper">
+    <div id="carousel-wrapper">
       <q-carousel
         class="rounded-borders"
         v-model="slide"
         transition-prev="slide-right"
         transition-next="slide-left"
         animated
-        control-color="primary"
+        swipeable
+        infinite
+        arrows
+        navigation
+        control-color="black"
+        dark
       >
         <q-carousel-slide
           class="column no-wrap flex-center"
-          name="style"
-          v-for="img in images"
+          :name="index"
+          v-for="(img, index) in images"
           :key="img.src"
         >
-          <q-icon name="style" color="primary" size="56px" />
-          <div class="q-mt-md text-center">
-            <q-img
-              max-height="500"
-              contain
-              :src="`http://localhost:3085/${img.src}`"
-            />
-          </div>
+          <q-img :src="`http://localhost:3085/${img.src}`" />
         </q-carousel-slide>
       </q-carousel>
-
-      <div class="row justify-center">
-        <q-btn-toggle
-          glossy
-          v-model="slide"
-          :options="[
-            { label: 1, value: 'style' },
-            { label: 2, value: 'tv' },
-            { label: 3, value: 'layers' },
-            { label: 4, value: 'map' },
-          ]"
-        />
-      </div>
     </div>
   </div>
 </template>
 <script setup>
-const slide = ref("style");
+import { ref } from "vue";
+
+const slide = ref(0);
 
 const props = defineProps({
   images: {
@@ -61,4 +48,49 @@ const props = defineProps({
 
 const images = props.images;
 const closeModal = props.closeModal;
+
+console.log(images);
 </script>
+<style lang="scss" scoped>
+#image-zoom {
+  position: fixed;
+  z-index: 5000;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  header {
+    height: 44px;
+    background: white;
+    position: relative;
+    padding: 0;
+    text-align: center;
+
+    h1 {
+      margin: 0;
+      font-size: 17px;
+      color: #333;
+      line-height: 44px;
+    }
+
+    #close-btn {
+      position: absolute;
+      right: 0;
+      top: 0;
+      padding: 15px;
+      line-height: 14px;
+      cursor: pointer;
+    }
+  }
+
+  #carousel-wrapper {
+    height: calc(100% - 44px);
+    background: rgb(9, 9, 9, 0.6);
+  }
+}
+
+.q-panel > div {
+  margin: auto;
+}
+</style>
