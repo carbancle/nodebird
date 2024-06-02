@@ -15,8 +15,8 @@
       <q-btn flat color="orange">
         <q-icon name="mdi-repeat-variant" />
       </q-btn>
-      <q-btn flat color="orange">
-        <q-icon name="mdi-heart-outline" />
+      <q-btn flat color="orange" @click="onClickHeart">
+        <q-icon :name="heartIcon" />
       </q-btn>
       <q-btn @click="onToggleComment" flat color="orange">
         <q-icon name="mdi-comment-outline" />
@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useUserStore } from "src/stores/users";
 import { usePostStore } from "src/stores/posts";
 import CommentForm from "../components/CommentForm.vue";
@@ -78,6 +78,37 @@ const onToggleComment = async () => {
 const onEditPost = () => {};
 const onRemovePost = async () => {
   await posts.removePost({ postId: post.id });
+};
+
+const me = computed(() => {
+  return users.me;
+});
+
+const liked = computed(() => {
+  return (post.Likers || []).find((v) => v.id === (me.value && me.value.id));
+});
+
+const heartIcon = computed(() => {
+  return liked.value ? "mdi-heart" : "mdi-heart-outline";
+});
+const onRetweet = () => {
+  if (!me.value) {
+    return alert("로그인이 필요합니다.");
+  }
+  posts.retweet({ postId: post.id });
+};
+const onClickHeart = () => {
+  if (!me.value) {
+    return alert("로그인이 필요합니다.");
+  }
+  console.log(me.value);
+  if (me.value.id === post.UserId) {
+    return alert("자신의 글에 좋아요를 누를 수 없습니다.");
+  }
+  if (liked.value) {
+    return posts.unlikePost({ postId: post.id });
+  }
+  return posts.likePost({ postId: post.id });
 };
 </script>
 

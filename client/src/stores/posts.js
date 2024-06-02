@@ -3,6 +3,7 @@ import { api } from "boot/axios";
 import { throttle } from "quasar";
 
 const url = `http://localhost:3085/post`;
+const config = { withCredentials: true };
 
 const totalPosts = 51;
 const limit = 10;
@@ -22,9 +23,6 @@ export const usePostStore = defineStore({
       const data = {
         content: payload.content,
         image: this.imagePaths,
-      };
-      const config = {
-        withCredentials: true,
       };
       const result = await api.post(`${url}`, data, config);
       const json = result.data;
@@ -50,9 +48,7 @@ export const usePostStore = defineStore({
     }, 2000),
     async removePost(payload) {
       try {
-        await api.delete(`${url}/${payload.postId}`, {
-          withCredentials: true,
-        });
+        await api.delete(`${url}/${payload.postId}`, config);
 
         const index = this.mainPosts.findIndex((v) => v.id === payload.postId);
         this.mainPosts.splice(index, 1);
@@ -68,7 +64,7 @@ export const usePostStore = defineStore({
             content: payload.content,
             imagePaths: this.imagePaths,
           },
-          { withCredentials: true }
+          config
         );
         const json = result.data;
 
@@ -91,9 +87,6 @@ export const usePostStore = defineStore({
     },
     async uploadImages(payload) {
       console.log(payload, " :: payload");
-      const config = {
-        withCredentials: true,
-      };
 
       const result = await api.post(`${url}/images`, payload, config);
       const json = result.data;
@@ -102,6 +95,53 @@ export const usePostStore = defineStore({
     },
     removeImagePath(payload) {
       this.imagePaths.splice(payload, 1);
+    },
+    async retweet(payload) {
+      try {
+        const result = await api.post(
+          `${url}/${payload.postId}/like`,
+          payload,
+          config
+        );
+        const json = result.data;
+        this.addPost(json);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    async likePost(payload) {
+      try {
+        const result = await api.post(
+          `${url}/${payload.postId}/like`,
+          payload,
+          config
+        );
+        const json = result.data;
+
+        const index = this.mainPosts.findIndex((v) => v.id === payload.postId);
+        this.mainPosts[index].Likers.push({
+          id: json.userId,
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    async unlikePost(payload) {
+      try {
+        const result = await api.delete(
+          `${url}/${payload.postId}/like`,
+          config
+        );
+        const json = result.data;
+
+        const index = this.mainPosts.findIndex((v) => v.id === payload.postId);
+        const userIndex = this.mainPosts[index].Likers.findIndex(
+          (v) => v.id === json.userId
+        );
+        this.mainPosts[index].Likers.splice(userIndex, 1);
+      } catch (err) {
+        console.error(err);
+      }
     },
   },
 });

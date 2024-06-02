@@ -29,10 +29,10 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { useUserStore } from "stores/users";
 
-const user = useUserStore();
+const users = useUserStore();
 
 const valid = ref(false);
 const form = ref(null);
@@ -44,14 +44,14 @@ const emailRules = [
 ];
 const passwordRules = [(v) => !!v || "비밀번호는 필수입니다."];
 
-const me = computed(() => user.$state.me);
-console.log(me.value, " :: ? me");
+// const me = users.loadUser;
+// console.log(me.value, " :: ? me");
 
 const onSubmitForm = () => {
   form.value.validate().then((success) => {
     if (success) {
       alert("로그인 시도!");
-      user.login({
+      users.login({
         email: email.value,
         password: password.value,
       });
@@ -63,7 +63,7 @@ const onSubmitForm = () => {
 };
 
 const onLogOut = () => {
-  user.logOut();
+  users.logOut();
 };
 </script>
 

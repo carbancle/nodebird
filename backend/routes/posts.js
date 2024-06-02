@@ -25,24 +25,24 @@ router.get("/", async (req, res, next) => {
         {
           model: db.Image,
         },
-        // {
-        //   model: db.User,
-        //   as: "Likers",
-        //   attributes: ["id"],
-        // },
-        // {
-        //   model: db.Post,
-        //   as: "Retweet",
-        //   include: [
-        //     {
-        //       model: db.User,
-        //       attributes: ["id", "nickname"],
-        //     },
-        //     {
-        //       model: db.Image,
-        //     },
-        //   ],
-        // },
+        {
+          model: db.User,
+          as: "Likers",
+          attributes: ["id"],
+        },
+        {
+          model: db.Post,
+          as: "Retweet",
+          include: [
+            {
+              model: db.User,
+              attributes: ["id", "nickname"],
+            },
+            {
+              model: db.Image,
+            },
+          ],
+        },
       ],
       order: [["createdAt", "DESC"]],
       limit: parseInt(req.query.limit, 10) || 10,
