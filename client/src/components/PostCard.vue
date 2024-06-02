@@ -101,7 +101,6 @@ const onClickHeart = () => {
   if (!me.value) {
     return alert("로그인이 필요합니다.");
   }
-  console.log(me.value);
   if (me.value.id === post.UserId) {
     return alert("자신의 글에 좋아요를 누를 수 없습니다.");
   }
