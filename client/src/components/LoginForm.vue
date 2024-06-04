@@ -20,9 +20,8 @@
         <q-btn to="/sign-up">회원가입</q-btn>
       </q-form>
     </q-card>
-    <q-card class="q-ma-sm q-pa-sm">
-      <!-- <q-card class="q-ma-sm q-pa-sm" v-else> -->
-      <!-- {{ me.nickname }} 님 로그인되었습니다. -->
+    <q-card class="q-ma-sm q-pa-sm" v-else>
+      {{ me.nickname }} 님 로그인되었습니다.
       <q-btn @click="onLogOut">로그아웃</q-btn>
     </q-card>
   </q-page>

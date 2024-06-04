@@ -23,6 +23,8 @@ export const useUserStore = defineStore({
       this.me = null;
     },
     async loadUser() {
+      // 해당 loadUser 함수를 DefaultLayout 에서 onMounted를 사용하여 호출하고 있음
+      // DefaultLayout 컴포넌트를 사용하지 않는 경우.. loadUser 함수가 실행되지 않기에 문제가 발생할 수 있다
       try {
         const userState = localStorage.getItem("userState");
         if (userState) {

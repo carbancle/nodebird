@@ -1,7 +1,15 @@
 import { useUserStore } from "src/stores/users";
+import { createPinia } from "pinia";
+import { createApp } from "vue";
+import App from "src/App.vue";
+
+const pinia = createPinia();
+const app = createApp(App);
+app.use(pinia);
+
+const users = useUserStore();
 
 const isAuthenticated = (to, from, next) => {
-  const users = useUserStore();
   const me = users.me;
   if (!me) {
     alert("로그인한 사용자만 이용가능합니다.");
