@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useUserStore } from "stores/users";
 
 const users = useUserStore();
@@ -44,7 +44,9 @@ const emailRules = [
 ];
 const passwordRules = [(v) => !!v || "비밀번호는 필수입니다."];
 
-// const me = users.loadUser;
+const me = computed(() => {
+  return users.me;
+});
 // console.log(me.value, " :: ? me");
 
 const onSubmitForm = () => {

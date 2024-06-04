@@ -17,7 +17,7 @@ import PostCard from "../components/PostCard.vue";
 import PostForm from "../components/PostForm.vue";
 
 onMounted(() => {
-  post.loadPosts();
+  posts.loadPosts();
   window.addEventListener("scroll", onScroll);
 });
 
@@ -25,12 +25,12 @@ onBeforeUnmount(() => {
   window.removeEventListener("scroll", onScroll);
 });
 
-const user = useUserStore();
-const post = usePostStore();
+const users = useUserStore();
+const posts = usePostStore();
 
-const me = computed(() => user.me);
-const mainPosts = computed(() => post.mainPosts);
-const hasMorePost = computed(() => post.hasMorePost);
+const me = computed(() => users.me);
+const mainPosts = computed(() => posts.mainPosts);
+const hasMorePost = computed(() => posts.hasMorePost);
 
 const onScroll = () => {
   if (
@@ -38,7 +38,7 @@ const onScroll = () => {
     document.documentElement.scrollHeight - 300
   ) {
     if (hasMorePost.value) {
-      post.loadPosts();
+      posts.loadPosts();
     }
   }
 };

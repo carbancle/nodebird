@@ -24,11 +24,12 @@ export const useUserStore = defineStore({
     },
     async loadUser() {
       try {
-        const result = await api.get(`${url}`, { withCredentials: true });
-        const json = result.data;
-
-        this.setMe(json);
-        this.clearMe(json);
+        const userState = localStorage.getItem("userState");
+        if (userState) {
+          this.setMe(JSON.parse(userState));
+        } else {
+          this.me = null;
+        }
       } catch (err) {
         console.log(err);
       }
@@ -59,6 +60,8 @@ export const useUserStore = defineStore({
       const json = result.data;
 
       this.setMe(json);
+      localStorage.setItem("userState", JSON.stringify(json));
+      console.log(this.me);
     },
     async logOut() {
       const config = {
@@ -69,6 +72,7 @@ export const useUserStore = defineStore({
       const json = result.data;
 
       this.clearMe();
+      localStorage.removeItem("userState");
     },
     // todolist > nuxt store 구조를 pinia store로 변경 해야함
     changeNickname(payload) {
