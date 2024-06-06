@@ -135,5 +135,21 @@ export const useUserStore = defineStore({
   },
 });
 
+/*
+  일반적으로 함수 파일을 생성한 뒤 src 폴더 내 main.js 에서 앱 로드전 함수를 호출하는 방식이지만,
+  quasar를 사용할 시, main.js를 직접적으로 수정할 수 없기에 다음과 같은 방법을 사용한다.'
+  1. 앱 로드시 store를 호출하므로 store에서 함수를 실행하면 전역적으로 실행되는 효과를 얻을 수 있다.
+  (현재 사용하고 있는 방법)
+
+  2. 정석적인 방법은 boot 폴더에 앱 로드전 실행할 js 파일을 생성한 뒤,
+    quasar.config.js 파일의 boot 경로에 해당 파일을 등록해주는 방식을 사용한다.
+  --------- 예시 ------------
+  quasar.config.js
+  boot: [
+    '앱 로드 전 실행할 파일.js',
+    '앱 로드 전 실행할 파일2.js',
+    ...
+  ],
+*/
 const users = useUserStore();
 users.loadUser();
