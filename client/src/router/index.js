@@ -6,6 +6,7 @@ import {
   createWebHashHistory,
 } from "vue-router";
 import routes from "./routes";
+import { useUserStore } from "src/stores/users";
 
 /*
  * If not building with SSR mode, you can
@@ -31,6 +32,21 @@ export default route(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.VUE_ROUTER_BASE),
+  });
+
+  Router.beforeEach((to, from, next) => {
+    const users = useUserStore();
+    users.loadUser();
+    if (to.matched.some((record) => record.meta.requiresAuth)) {
+      if (!users.isAuthenticated) {
+        alert("로그인하지 않은 사용자는 이용할 수 없습니다.");
+        next("/");
+      } else {
+        next();
+      }
+    } else {
+      next();
+    }
   });
 
   return Router;

@@ -1,13 +1,3 @@
-const isAuthenticated = (to, from, next) => {
-  const me = users.me;
-  if (!me) {
-    alert("로그인한 사용자만 이용가능합니다.");
-    return next("/");
-  } else {
-    return next();
-  }
-};
-
 const routes = [
   {
     path: "/main",
@@ -33,7 +23,7 @@ const routes = [
       {
         path: "profile",
         component: () => import("src/pages/ProfilePage.vue"),
-        beforeEnter: [isAuthenticated],
+        meta: { requiresAuth: true },
       },
       {
         path: "user/:id",

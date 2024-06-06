@@ -99,7 +99,7 @@ export const usePostStore = defineStore({
     async retweet(payload) {
       try {
         const result = await api.post(
-          `${url}/${payload.postId}/like`,
+          `${url}/${payload.postId}/retweet`,
           payload,
           config
         );
@@ -107,6 +107,7 @@ export const usePostStore = defineStore({
         this.addPost(json);
       } catch (err) {
         console.error(err);
+        alert(err.response.data);
       }
     },
     async likePost(payload) {
@@ -124,6 +125,7 @@ export const usePostStore = defineStore({
         });
       } catch (err) {
         console.error(err);
+        alert(err.response.data);
       }
     },
     async unlikePost(payload) {

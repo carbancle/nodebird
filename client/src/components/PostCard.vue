@@ -1,18 +1,14 @@
 <template>
-  <q-card style="margin-bottom: 20px">
-    <PostImages :images="post.Images || []" />
-    <q-card-section>
-      <div>
-        <div class="text-h6">
-          <router-link :to="`/user/` + post.id">
-            {{ post.User.nickname }}
-          </router-link>
-        </div>
-        <div>{{ post.content }}</div>
-      </div>
-    </q-card-section>
+  <q-card class="q-pa-sm q-my-md">
+    <div v-if="post.RetweetId && post.Retweet">
+      <div class="text-h6">{{ post.User.nickname }} 님이 리트윗하셨습니다.</div>
+      <q-card class="q-ma-md">
+        <PostContent :post="post.Retweet" />
+      </q-card>
+    </div>
+    <PostContent v-else :post="post" />
     <q-card-actions>
-      <q-btn flat color="orange">
+      <q-btn flat color="orange" @click="onRetweet">
         <q-icon name="mdi-repeat-variant" />
       </q-btn>
       <q-btn flat color="orange" @click="onClickHeart">
@@ -58,7 +54,7 @@ import { ref, computed } from "vue";
 import { useUserStore } from "src/stores/users";
 import { usePostStore } from "src/stores/posts";
 import CommentForm from "../components/CommentForm.vue";
-import PostImages from "../components/PostImages.vue";
+import PostContent from "../components/PostContent.vue";
 
 const users = useUserStore();
 const posts = usePostStore();
@@ -100,9 +96,6 @@ const onRetweet = () => {
 const onClickHeart = () => {
   if (!me.value) {
     return alert("로그인이 필요합니다.");
-  }
-  if (me.value.id === post.UserId) {
-    return alert("자신의 글에 좋아요를 누를 수 없습니다.");
   }
   if (liked.value) {
     return posts.unlikePost({ postId: post.id });

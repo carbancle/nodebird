@@ -16,6 +16,7 @@ export const useUserStore = defineStore({
     hasMoreFollowing: true,
   }),
   getters: {
+    isAuthenticated: (state) => !!state.me,
     // Add getters if needed
   },
   actions: {
@@ -26,21 +27,17 @@ export const useUserStore = defineStore({
       this.me = null;
     },
     async loadUser() {
-      // 해당 loadUser 함수를 DefaultLayout 에서 onMounted를 사용하여 호출하고 있음
-      // DefaultLayout 컴포넌트를 사용하지 않는 경우.. loadUser 함수가 실행되지 않기에 문제가 발생할 수 있다
       try {
         const userState = localStorage.getItem("userState");
         console.log(userState);
         if (userState) {
-          console.log("참");
           const result = await api.get(url, config);
           const json = result.data;
           this.setMe(json);
         } else {
-          console.log("거짓");
-          // localStorage.removeItem("userState");
-          // isLogin.value = false;
-          // this.me = null;
+          localStorage.removeItem("userState");
+          isLogin.value = false;
+          this.me = null;
         }
       } catch (err) {
         console.log(err);
@@ -62,10 +59,6 @@ export const useUserStore = defineStore({
       const data = {
         email: payload.email,
         password: payload.password,
-      };
-
-      const config = {
-        withCredentials: true,
       };
 
       const result = await api.post(`${url}/login`, data, config);
@@ -106,6 +99,32 @@ export const useUserStore = defineStore({
     loadFollowings() {
       if (this.hasMoreFollowing) this.loadFollowingsAction();
     },
+    async following(payload) {
+      try {
+        const result = await api.post(
+          `${url}/${payload.userId}/follow`,
+          payload,
+          config
+        );
+        const json = result.data;
+
+        this.me.Followings.push({ id: payload.userId });
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    async unfollowing(payload) {
+      try {
+        await api.delete(`${url}/${payload.userId}/unfollow`, config);
+
+        const index = this.me.Followings.findIndex(
+          (v) => v.id === payload.userId
+        );
+        this.me.Followings.splice(index, 1);
+      } catch (err) {
+        console.error(err);
+      }
+    },
     loadFollowersAction() {
       const totalFollowers = 8;
       const limit = 3;
@@ -139,7 +158,11 @@ export const useUserStore = defineStore({
   일반적으로 함수 파일을 생성한 뒤 src 폴더 내 main.js 에서 앱 로드전 함수를 호출하는 방식이지만,
   quasar를 사용할 시, main.js를 직접적으로 수정할 수 없기에 다음과 같은 방법을 사용한다.'
   1. 앱 로드시 store를 호출하므로 store에서 함수를 실행하면 전역적으로 실행되는 효과를 얻을 수 있다.
-  (현재 사용하고 있는 방법)
+  (현재 사용하고 있는 방법 => 기각)
+  quasar에서 앱 로드시 순서 app.vue is loaded => store is imported => router is imported => boot is imported
+  이 경우, store가 가장 먼저 로드되어 router에서 store를 사용할 수 없는 상황이 발생해버림
+  (store에서 store 함수 실행, router에서 store를 호출하지 않았는데 store 함수 실행 요청이 들어가서 에러)
+  따라서 아래 2번 방식인 boot시에 로그인 유지 store를 불러오도록 수정
 
   2. 정석적인 방법은 boot 폴더에 앱 로드전 실행할 js 파일을 생성한 뒤,
     quasar.config.js 파일의 boot 경로에 해당 파일을 등록해주는 방식을 사용한다.
@@ -151,5 +174,3 @@ export const useUserStore = defineStore({
     ...
   ],
 */
-const users = useUserStore();
-users.loadUser();

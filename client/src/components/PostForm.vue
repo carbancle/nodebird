@@ -62,7 +62,7 @@ import { useUserStore } from "src/stores/users";
 import { usePostStore } from "src/stores/posts";
 import "../css/quasar-custom.scss";
 
-const users = useUserStore();
+// const users = useUserStore();
 const posts = usePostStore();
 
 const valid = ref(null);
@@ -72,7 +72,7 @@ const isSuccess = ref(false);
 const content = ref("");
 const imageInput = ref(null);
 
-const me = computed(() => users.me);
+// const me = computed(() => users.me);
 const imagePaths = computed(() => posts.imagePaths);
 
 const onChangeTextarea = (value) => {

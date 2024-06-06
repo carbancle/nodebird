@@ -37,16 +37,9 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useUserStore } from "src/stores/users";
 import LoginForm from "../components/LoginForm.vue";
-import { onMounted } from "vue";
 
 const $router = useRouter();
-const users = useUserStore();
-
-onMounted(() => {
-  return users.loadUser();
-});
 
 const hashtag = ref("");
 
