@@ -1,7 +1,10 @@
 import { defineStore } from "pinia";
 import { api } from "boot/axios";
+import { ref } from "vue";
 
 const url = `http://localhost:3085/user`;
+const config = { withCredentials: true };
+const isLogin = ref(false);
 
 export const useUserStore = defineStore({
   id: "user",
@@ -27,10 +30,17 @@ export const useUserStore = defineStore({
       // DefaultLayout 컴포넌트를 사용하지 않는 경우.. loadUser 함수가 실행되지 않기에 문제가 발생할 수 있다
       try {
         const userState = localStorage.getItem("userState");
+        console.log(userState);
         if (userState) {
-          this.setMe(JSON.parse(userState));
+          console.log("참");
+          const result = await api.get(url, config);
+          const json = result.data;
+          this.setMe(json);
         } else {
-          this.me = null;
+          console.log("거짓");
+          // localStorage.removeItem("userState");
+          // isLogin.value = false;
+          // this.me = null;
         }
       } catch (err) {
         console.log(err);
@@ -62,14 +72,10 @@ export const useUserStore = defineStore({
       const json = result.data;
 
       this.setMe(json);
-      localStorage.setItem("userState", JSON.stringify(json));
-      console.log(this.me);
+      isLogin.value = true;
+      localStorage.setItem("userState", isLogin.value);
     },
     async logOut() {
-      const config = {
-        withCredentials: true,
-      };
-
       const result = await api.post(`${url}/logout`, {}, config);
       const json = result.data;
 
@@ -128,3 +134,6 @@ export const useUserStore = defineStore({
     },
   },
 });
+
+const users = useUserStore();
+users.loadUser();

@@ -46,7 +46,6 @@ const passwordRules = [(v) => !!v || "비밀번호는 필수입니다."];
 const me = computed(() => {
   return users.me;
 });
-// console.log(me.value, " :: ? me");
 
 const onSubmitForm = () => {
   form.value.validate().then((success) => {
