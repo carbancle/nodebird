@@ -52,32 +52,34 @@ const valid = ref(false);
 const nickname = ref("");
 const nicknameRules = ref([(v) => !!v || "닉네임을 입력하세요."]);
 
-const followerList = computed(() => users.followerList);
 const followingList = computed(() => users.followingList);
-const hasMoreFollower = computed(() => users.hasMoreFollower);
+const followerList = computed(() => users.followerList);
 const hasMoreFollowing = computed(() => users.hasMoreFollowing);
+const hasMoreFollower = computed(() => users.hasMoreFollower);
 
-console.log(hasMoreFollower.value, hasMoreFollowing.value);
+users.loadFollowings({ offset: 0 });
+users.loadFollowers({ offset: 0 });
+
+// console.log(hasMoreFollower.value, hasMoreFollowing.value);
 
 const onChangeNickname = () => {
-  users.changeNickname(nickname.value);
+  users.changeNickname({ nickname: nickname.value });
 };
 
 const onRemoveFollowing = (id) => {
   // console.log("클릭한 대상의 id 값?", id);
   users.removeFollowing(id);
 };
-
 const onRemoveFollower = (id) => {
   // console.log("클릭한 대상의 id 값?", id);
   users.removeFollower(id);
 };
-const loadMoreFollowers = () => {
-  users.loadFollowers();
-};
 
 const loadMoreFollowings = () => {
   users.loadFollowings();
+};
+const loadMoreFollowers = () => {
+  users.loadFollowers();
 };
 
 useMeta(() => {

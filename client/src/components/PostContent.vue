@@ -2,12 +2,22 @@
   <PostImages :images="post.Images || []" />
   <q-card-section>
     <div>
-      <div class="text-h6">
-        <router-link :to="`/user/` + post.id">
+      <div class="row items-center text-h6">
+        <router-link class="q-mr-md" :to="`/user/` + post.id">
           {{ post.User.nickname }}
         </router-link>
-        <q-btn v-if="canFollow" @click="onFollow" label="팔로우" />
-        <q-btn v-if="canUnfollow" @click="onUnfollow" label="언팔로우" />
+        <q-btn
+          v-if="canFollow"
+          @click="onFollow"
+          color="primary"
+          label="팔로우"
+        />
+        <q-btn
+          v-if="canUnfollow"
+          @click="onUnfollow"
+          color="red"
+          label="언팔로우"
+        />
       </div>
       <div>{{ post.content }}</div>
     </div>
@@ -17,7 +27,6 @@
 import { computed } from "vue";
 import PostImages from "./PostImages.vue";
 import { useUserStore } from "src/stores/users";
-import { usePostStore } from "src/stores/posts";
 
 const props = defineProps(["post"]);
 const post = props.post;

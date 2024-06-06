@@ -5,6 +5,7 @@ import { ref } from "vue";
 const url = `http://localhost:3085/user`;
 const config = { withCredentials: true };
 const isLogin = ref(false);
+const limit = 3;
 
 export const useUserStore = defineStore({
   id: "user",
@@ -76,8 +77,18 @@ export const useUserStore = defineStore({
       localStorage.removeItem("userState");
     },
     // todolist > nuxt store 구조를 pinia store로 변경 해야함
-    changeNickname(payload) {
-      this.me.nickname = payload.nickname;
+    async changeNickname(payload) {
+      try {
+        await api.patch(
+          `${url}/nickname`,
+          { nickname: payload.nickname },
+          config
+        );
+
+        this.me.nickname = payload.nickname;
+      } catch (err) {
+        console.error(err);
+      }
     },
     addFollowing(payload) {
       this.followingList.push(payload);
@@ -93,11 +104,41 @@ export const useUserStore = defineStore({
       const index = this.followerList.findIndex((v) => v.id === payload.id);
       this.followerList.splice(index, 1);
     },
-    loadFollowers() {
-      if (this.hasMoreFollower) this.loadFollowersAction();
+    async loadFollowings(payload) {
+      let offset = this.followerList.length;
+
+      if (!(payload && payload.offset === 0) && !this.hasMoreFollowing) return;
+      if (payload && payload.offset === 0) offset = 0;
+      const result = await api.get(
+        `${url}/${this.me.id}/followings?limit=3&offset=${offset}`,
+        config
+      );
+      const json = result.data;
+
+      if (payload.offset === 0) {
+        this.followingList = json;
+      } else {
+        this.followingList = this.followingList.concat(json);
+      }
+      this.hasMoreFollowing = json.length === limit;
     },
-    loadFollowings() {
-      if (this.hasMoreFollowing) this.loadFollowingsAction();
+    async loadFollowers(payload) {
+      let offset = this.followerList.length;
+
+      if (!(payload && payload.offset === 0) && !this.hasMoreFollower) return;
+      if (payload && payload.offset === 0) offset = 0;
+      const result = await api.get(
+        `${url}/${this.me.id}/followers?limit=3&offset=${offset}`,
+        config
+      );
+      const json = result.data;
+
+      if (payload.offset === 0) {
+        this.followerList = json;
+      } else {
+        this.followerList = this.followerList.concat(json);
+      }
+      this.hasMoreFollower = json.length === limit;
     },
     async following(payload) {
       try {
@@ -125,32 +166,32 @@ export const useUserStore = defineStore({
         console.error(err);
       }
     },
-    loadFollowersAction() {
-      const totalFollowers = 8;
-      const limit = 3;
-      const diff = totalFollowers - this.followerList.length;
-      const fakeUsers = Array(diff > limit ? limit : diff)
-        .fill()
-        .map((v) => ({
-          id: Math.random().toString(),
-          nickname: Math.floor(Math.random() * 1000),
-        }));
-      this.followerList = this.followerList.concat(fakeUsers);
-      this.hasMoreFollower = fakeUsers.length === limit;
-    },
-    loadFollowingsAction() {
-      const totalFollowings = 6;
-      const limit = 3;
-      const diff = totalFollowings - this.followingList.length;
-      const fakeUsers = Array(diff > limit ? limit : diff)
-        .fill()
-        .map((v) => ({
-          id: Math.random().toString(),
-          nickname: Math.floor(Math.random() * 1000),
-        }));
-      this.followingList = this.followingList.concat(fakeUsers);
-      this.hasMoreFollowing = fakeUsers.length === limit;
-    },
+    // loadFollowersAction() {
+    //   const totalFollowers = 8;
+    //   const limit = 3;
+    //   const diff = totalFollowers - this.followerList.length;
+    //   const fakeUsers = Array(diff > limit ? limit : diff)
+    //     .fill()
+    //     .map((v) => ({
+    //       id: Math.random().toString(),
+    //       nickname: Math.floor(Math.random() * 1000),
+    //     }));
+    //   this.followerList = this.followerList.concat(fakeUsers);
+    //   this.hasMoreFollower = fakeUsers.length === limit;
+    // },
+    // loadFollowingsAction() {
+    //   const totalFollowings = 6;
+    //   const limit = 3;
+    //   const diff = totalFollowings - this.followingList.length;
+    //   const fakeUsers = Array(diff > limit ? limit : diff)
+    //     .fill()
+    //     .map((v) => ({
+    //       id: Math.random().toString(),
+    //       nickname: Math.floor(Math.random() * 1000),
+    //     }));
+    //   this.followingList = this.followingList.concat(fakeUsers);
+    //   this.hasMoreFollowing = fakeUsers.length === limit;
+    // },
   },
 });
 
