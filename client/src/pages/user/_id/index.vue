@@ -37,19 +37,18 @@ const loadPosts = async () => {
     await users.loadOther({ userId: $route.params.id }),
     await posts.loadUserPosts({ userId: $route.params.id, reset: true }),
   ]);
-  nextTick();
 };
 
 onMounted(() => {
   window.addEventListener("scroll", onScroll);
   loadPosts();
+  nextTick();
 });
 
 const name = ref("Nuxt.js");
 
 const other = computed(() => users.other);
 const mainPosts = computed(() => posts.mainPosts);
-console.log(mainPosts, "123");
 const hasMorePost = computed(() => posts.hasMorePost);
 
 const onScroll = () => {

@@ -4,6 +4,7 @@ import { throttle } from "quasar";
 
 const url = `http://localhost:3085/post`;
 const userUrl = `http://localhost:3085/user`;
+const hashtagUrl = `http://localhost:3085/hashtag`;
 const config = { withCredentials: true };
 const limit = 10;
 
@@ -73,6 +74,36 @@ export const usePostStore = defineStore({
           const result = await api.get(
             // `${url}s?offset=${this.mainPosts.length}&limit=10`
             `${userUrl}/${payload.userId}/posts?lastId=${
+              lastPost && lastPost.id
+            }&limit=${limit}`
+          );
+          const json = result.data;
+
+          this.mainPosts = this.mainPosts.concat(json);
+          this.hasMorePost = json.length === limit;
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }, 1500),
+    loadHashtagPosts: throttle(async function (payload) {
+      try {
+        if (payload && payload.reset) {
+          const result = await api.get(
+            `${hashtagUrl}/${payload.hashtag}?limit=${limit}`
+          );
+          const json = result.data;
+
+          this.mainPosts = json;
+          this.hasMorePost = json.length === limit;
+
+          return;
+        }
+        if (this.hasMorePost) {
+          const lastPost = this.mainPosts[this.mainPosts.length - 1];
+          const result = await api.get(
+            // `${url}s?offset=${this.mainPosts.length}&limit=10`
+            `${hashtagUrl}/${payload.hashtag}?lastId=${
               lastPost && lastPost.id
             }&limit=${limit}`
           );

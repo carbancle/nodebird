@@ -33,6 +33,10 @@ const routes = [
         path: "post/:id",
         component: () => import("src/pages/post/_id/index.vue"),
       },
+      {
+        path: "hashtag/:id",
+        component: () => import("src/pages/hashtag/_id/index.vue"),
+      },
     ],
   },
 ];

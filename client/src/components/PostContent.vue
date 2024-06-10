@@ -19,7 +19,19 @@
           label="언팔로우"
         />
       </div>
-      <div>{{ post.content }}</div>
+      <div>
+        <template v-for="(node, i) in nodes">
+          <router-link
+            class="text-primary"
+            v-if="node.startsWith('#')"
+            :key="i"
+            :to="`/hashtag/${node.slice(1)}`"
+            >{{ node }}</router-link
+          >
+          <template v-else>{{ node }}</template>
+        </template>
+        <!-- {{ post.content }} -->
+      </div>
     </div>
   </q-card-section>
 </template>
@@ -36,6 +48,8 @@ const users = useUserStore();
 const me = computed(() => {
   return users.me;
 });
+
+const nodes = computed(() => post.content.split(/(#[^\s#]+)/));
 
 const canFollow = computed(() => {
   return (

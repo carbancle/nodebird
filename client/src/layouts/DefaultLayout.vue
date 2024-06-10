@@ -5,18 +5,21 @@
         <q-toolbar-title>
           <router-link to="/" class="text-white">NodeBird</router-link>
         </q-toolbar-title>
-        <q-input
-          class="q-mr-sm"
-          color="white"
-          label-color="white"
-          :dense="true"
-          type="search"
-          label="검색"
-        >
-          <template v-slot:prepend>
-            <q-icon color="white" name="mdi-magnify" />
-          </template>
-        </q-input>
+        <q-form @submit.prevent="onSearchHashtag">
+          <q-input
+            class="q-mr-sm"
+            v-model="hashtag"
+            color="white"
+            label-color="white"
+            :dense="true"
+            type="search"
+            label="검색"
+          >
+            <template v-slot:prepend>
+              <q-icon color="white" name="mdi-magnify" />
+            </template>
+          </q-input>
+        </q-form>
         <q-btn to="/profile" flat text-color="white" label="프로필" />
         <q-btn to="/sign-up" flat text-color="white" label="회원가입" />
       </q-toolbar>
@@ -45,7 +48,7 @@ const hashtag = ref("");
 
 const onSearchHashtag = () => {
   $router.push({
-    path: `/hashtag/${hashtag.value}`,
+    path: `/hashtag/${encodeURIComponent(hashtag.value)}`,
   });
   hashtag.value = "";
 };
