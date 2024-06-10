@@ -1,5 +1,5 @@
 <template>
-  <q-card class="q-pa-sm q-my-md">
+  <q-card class="q-pa-sm q-my-sm">
     <div v-if="post.RetweetId && post.Retweet">
       <div class="text-h6">{{ post.User.nickname }} 님이 리트윗하셨습니다.</div>
       <q-card class="q-ma-md">

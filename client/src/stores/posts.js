@@ -31,6 +31,16 @@ export const usePostStore = defineStore({
       this.imagePaths = [];
     },
     // todolist 삭제 함수부터는 확인 필요
+    async loadPost(payload) {
+      try {
+        const result = await api.get(`${url}/${payload}`);
+        const json = result.data;
+
+        this.mainPosts = [json];
+      } catch (err) {
+        console.log(err);
+      }
+    },
     loadPosts: throttle(async function (payload) {
       try {
         if (payload && payload.reset) {

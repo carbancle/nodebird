@@ -81,6 +81,44 @@ router.post("/", isLoggedIn, async (req, res, next) => {
     next(err);
   }
 });
+router.get("/:id", async (req, res, next) => {
+  try {
+    const post = await db.Post.findOne({
+      where: { id: req.params.id },
+      include: [
+        {
+          model: db.User,
+          attributes: ["id", "nickname"],
+        },
+        {
+          model: db.Image,
+        },
+        {
+          model: db.User,
+          as: "Likers",
+          attributes: ["id"],
+        },
+        {
+          model: db.Post,
+          as: "Retweet",
+          include: [
+            {
+              model: db.User,
+              attributes: ["id", "nickname"],
+            },
+            {
+              model: db.Image,
+            },
+          ],
+        },
+      ],
+    });
+    res.json(post);
+  } catch (err) {
+    console.error(err);
+  }
+});
+
 // router.patch()
 router.delete("/:id", async (req, res, next) => {
   try {
