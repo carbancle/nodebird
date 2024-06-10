@@ -1,48 +1,47 @@
 <template>
-  <q-page>
-    <q-page-container class="custom-container">
-      <q-card>
-        <div class="text-h6">회원가입</div>
-        <q-form ref="valid" @submit.prevent="onSubmitForm">
-          <q-input
-            v-model="email"
-            label="이메일"
-            type="email"
-            :rules="emailRules"
-            required
-          />
-          <q-input
-            v-model="password"
-            label="비밀번호"
-            type="password"
-            :rules="passwordRules"
-            required
-          />
-          <q-input
-            v-model="passwordCheck"
-            label="비밀번호확인"
-            type="password"
-            :rules="passwordCheckRules"
-            required
-          />
-          <q-input
-            v-model="nickname"
-            label="닉네임"
-            type="nickname"
-            :rules="nicknameRules"
-            required
-          />
-          <q-checkbox
-            v-model="terms"
-            :rules="termsRules"
-            label="회원가입에 동의하십니까?"
-            required
-          />
-          <q-btn color="green" type="submit"> 가입하기 </q-btn>
-        </q-form>
-      </q-card>
-    </q-page-container>
-  </q-page>
+  <q-card class="q-ma-sm">
+    <q-card-section class="q-pa-sm">
+      <div class="text-h6">회원가입</div>
+      <q-form ref="valid" @submit.prevent="onSubmitForm">
+        <q-input
+          v-model="email"
+          label="이메일"
+          type="email"
+          :rules="emailRules"
+          required
+        />
+        <q-input
+          v-model="password"
+          label="비밀번호"
+          type="password"
+          :rules="passwordRules"
+          required
+        />
+        <q-input
+          v-model="passwordCheck"
+          label="비밀번호확인"
+          type="password"
+          :rules="passwordCheckRules"
+          required
+        />
+        <q-input
+          v-model="nickname"
+          label="닉네임"
+          type="nickname"
+          :rules="nicknameRules"
+          required
+        />
+        <q-checkbox
+          class="q-mr-md"
+          v-model="terms"
+          :rules="termsRules"
+          label="회원가입에 동의하십니까?"
+          required
+        />
+        <q-btn color="green" type="submit"> 가입하기 </q-btn>
+      </q-form>
+    </q-card-section>
+  </q-card>
 </template>
 
 <script setup>

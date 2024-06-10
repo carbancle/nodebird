@@ -9,16 +9,19 @@
   </q-page>
 </template>
 <script setup>
-import { computed, onBeforeUnmount, onMounted } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted } from "vue";
 import { useMeta } from "quasar";
 import { useUserStore } from "src/stores/users";
 import { usePostStore } from "src/stores/posts";
 import PostCard from "../components/PostCard.vue";
 import PostForm from "../components/PostForm.vue";
 
-onMounted(() => {
-  posts.loadPosts();
-  window.addEventListener("scroll", onScroll);
+onMounted(async () => {
+  Promise.all([
+    await posts.loadPosts({ reset: true }),
+    window.addEventListener("scroll", onScroll),
+  ]);
+  nextTick();
 });
 
 onBeforeUnmount(() => {

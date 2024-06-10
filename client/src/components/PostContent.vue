@@ -3,7 +3,7 @@
   <q-card-section>
     <div>
       <div class="row items-center text-h6">
-        <router-link class="q-mr-md" :to="`/user/` + post.id">
+        <router-link class="q-mr-md" :to="`/user/` + post.User.id">
           {{ post.User.nickname }}
         </router-link>
         <q-btn

@@ -21,8 +21,15 @@
       </q-form>
     </q-card>
     <q-card class="q-ma-sm q-pa-sm" v-else>
-      {{ me.nickname }} 님 로그인되었습니다.
-      <q-btn @click="onLogOut">로그아웃</q-btn>
+      <div class="row items-center q-mb-md">
+        <div class="q-mr-md">{{ me.nickname }} 님 로그인되었습니다.</div>
+        <q-btn @click="onLogOut">로그아웃</q-btn>
+      </div>
+      <div class="row">
+        <div class="col">{{ me.Followings.length }} 팔로잉</div>
+        <div class="col">{{ me.Followers.length }} 팔로워</div>
+        <div class="col">{{ me.Posts.length }} 게시글</div>
+      </div>
     </q-card>
   </q-page>
 </template>

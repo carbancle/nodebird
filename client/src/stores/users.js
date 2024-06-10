@@ -15,6 +15,7 @@ export const useUserStore = defineStore({
     followerList: [],
     hasMoreFollower: true,
     hasMoreFollowing: true,
+    other: null, // 남의 정보
   }),
   getters: {
     isAuthenticated: (state) => !!state.me,
@@ -30,7 +31,7 @@ export const useUserStore = defineStore({
     async loadUser() {
       try {
         const userState = localStorage.getItem("userState");
-        console.log(userState);
+        // console.log(userState);
         if (userState) {
           const result = await api.get(url, config);
           const json = result.data;
@@ -42,6 +43,16 @@ export const useUserStore = defineStore({
         }
       } catch (err) {
         console.log(err);
+      }
+    },
+    async loadOther(payload) {
+      try {
+        const result = await api.get(`${url}/${payload.userId}`, config);
+        const json = result.data;
+        console.log(json, "a");
+        this.other = json;
+      } catch (err) {
+        console.error(err);
       }
     },
     async signUp(payload) {
@@ -96,49 +107,49 @@ export const useUserStore = defineStore({
     addFollower(payload) {
       this.followerList.push(payload);
     },
-    removeFollowing(payload) {
-      const index = this.followingList.findIndex((v) => v.id === payload.id);
-      this.followingList.splice(index, 1);
-    },
-    removeFollower(payload) {
-      const index = this.followerList.findIndex((v) => v.id === payload.id);
-      this.followerList.splice(index, 1);
-    },
     async loadFollowings(payload) {
-      let offset = this.followerList.length;
+      try {
+        if (!(payload && payload.offset === 0) && !this.hasMoreFollowing)
+          return;
+        let offset = this.followingList.length;
+        if (payload && payload.offset === 0) offset = 0;
 
-      if (!(payload && payload.offset === 0) && !this.hasMoreFollowing) return;
-      if (payload && payload.offset === 0) offset = 0;
-      const result = await api.get(
-        `${url}/${this.me.id}/followings?limit=3&offset=${offset}`,
-        config
-      );
-      const json = result.data;
-
-      if (payload.offset === 0) {
-        this.followingList = json;
-      } else {
-        this.followingList = this.followingList.concat(json);
+        const result = await api.get(
+          `${url}/${this.me.id}/followings?limit=${limit}&offset=${offset}`,
+          config
+        );
+        const json = result.data;
+        if (offset === 0) {
+          this.followingList = json;
+        } else {
+          this.followingList = this.followingList.concat(json);
+        }
+        this.hasMoreFollowing = json.length === limit;
+      } catch (err) {
+        console.error(err);
       }
-      this.hasMoreFollowing = json.length === limit;
     },
     async loadFollowers(payload) {
-      let offset = this.followerList.length;
+      try {
+        if (!(payload && payload.offset === 0) && !this.hasMoreFollower) return;
+        let offset = this.followerList.length;
+        if (payload && payload.offset === 0) offset = 0;
 
-      if (!(payload && payload.offset === 0) && !this.hasMoreFollower) return;
-      if (payload && payload.offset === 0) offset = 0;
-      const result = await api.get(
-        `${url}/${this.me.id}/followers?limit=3&offset=${offset}`,
-        config
-      );
-      const json = result.data;
+        const result = await api.get(
+          `${url}/${this.me.id}/followers?limit=3&offset=${offset}`,
+          config
+        );
+        const json = result.data;
 
-      if (payload.offset === 0) {
-        this.followerList = json;
-      } else {
-        this.followerList = this.followerList.concat(json);
+        if (offset === 0) {
+          this.followerList = json;
+        } else {
+          this.followerList = this.followerList.concat(json);
+        }
+        this.hasMoreFollower = json.length === limit;
+      } catch (err) {
+        console.error(err);
       }
-      this.hasMoreFollower = json.length === limit;
     },
     async following(payload) {
       try {
@@ -158,14 +169,34 @@ export const useUserStore = defineStore({
       try {
         await api.delete(`${url}/${payload.userId}/unfollow`, config);
 
-        const index = this.me.Followings.findIndex(
+        let index = this.me.Followings.findIndex(
           (v) => v.id === payload.userId
         );
         this.me.Followings.splice(index, 1);
+        index = this.followingList.findIndex((v) => v.id === payload.userId);
+        this.followingList.splice(index, 1);
       } catch (err) {
         console.error(err);
       }
     },
+    async removeFollower(payload) {
+      try {
+        await api.delete(`${url}/${payload.userId}/follower`, config);
+
+        let index = this.me.Followers.findIndex((v) => v.id === payload.userId);
+        this.me.Followers.splice(index, 1);
+        index = this.followerList.findIndex((v) => v.id === payload.userId);
+        this.followerList.splice(index, 1);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    // unfollowing 와 동일한 기능이므로 unfollowing 를 사용한다.
+    // removeFollowing(payload) {
+    //   const index = this.followingList.findIndex((v) => v.id === payload.id);
+    //   this.followingList.splice(index, 1);
+    // },
+
     // loadFollowersAction() {
     //   const totalFollowers = 8;
     //   const limit = 3;

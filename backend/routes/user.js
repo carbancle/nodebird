@@ -17,6 +17,7 @@ router.get("/:id", async (req, res, next) => {
       include: [
         {
           model: db.Post,
+          as: "Posts",
           attributes: ["id"],
         },
         {
@@ -121,10 +122,10 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
         where: { id: user.id },
         attributes: ["id", "email", "nickname"],
         include: [
-          // {
-          //   model: db.Post,
-          //   attributes: ["id"],
-          // },
+          {
+            model: db.Post,
+            attributes: ["id"],
+          },
           {
             model: db.User,
             as: "Followings",
@@ -151,6 +152,41 @@ router.post("/logout", isLoggedIn, (req, res) => {
   }
 });
 
+router.get("/:id/posts", async (req, res, next) => {
+  try {
+    let where = {
+      UserId: parseInt(req.params.id, 10),
+      RetweetId: null,
+    };
+    if (parseInt(req.query.lastId, 10)) {
+      where[db.Sequelize.Op.lt] = parseInt(req.query.lastId, 10);
+    }
+    const posts = await db.Post.findAll({
+      where,
+      include: [
+        {
+          model: db.User,
+          attributes: ["id", "nickname"],
+        },
+        {
+          model: db.Image,
+        },
+        {
+          model: db.User,
+          through: "Like",
+          as: "Likers",
+          attributes: ["id"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+    res.send(posts);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
 router.post("/:id/follow", isLoggedIn, async (req, res, next) => {
   try {
     const me = await db.User.findOne({
@@ -170,6 +206,19 @@ router.delete("/:id/unfollow", isLoggedIn, async (req, res, next) => {
       where: { id: req.user.id },
     });
     await me.removeFollowing(req.params.id);
+    res.send(req.params.id);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+router.delete("/:id/follower", isLoggedIn, async (req, res, next) => {
+  try {
+    const me = await db.User.findOne({
+      where: { id: req.user.id },
+    });
+    await me.removeFollower(req.params.id);
     res.send(req.params.id);
   } catch (err) {
     console.error(err);

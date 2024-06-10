@@ -1,10 +1,10 @@
 <template>
-  <q-page>
-    <q-page-container class="custom-container">
-      <q-card class="q-mb-md">
+  <div class="q-ma-sm">
+    <q-card class="q-mb-md">
+      <q-card-section class="q-pa-sm">
         <q-form ref="valid" @submit.prevent="onChangeNickname">
-          <div class="text-h6 q-ma-sm">프로필</div>
-          <div class="row items-center q-mx-md">
+          <div class="text-h6">프로필</div>
+          <div class="row items-center">
             <q-input
               v-model="nickname"
               class="custom-input q-mr-sm"
@@ -17,9 +17,11 @@
             >
           </div>
         </q-form>
-      </q-card>
-      <q-card class="q-mb-md">
-        <div class="text-h6 q-ma-sm">팔로잉</div>
+      </q-card-section>
+    </q-card>
+    <q-card class="q-mb-md">
+      <q-card-section class="q-pa-sm">
+        <div class="text-h6">팔로잉</div>
         <FollowList :users="followingList" :remove="onRemoveFollowing" />
         <q-btn
           @click="loadMoreFollowings"
@@ -27,24 +29,26 @@
           color="primary"
           >더보기</q-btn
         >
-      </q-card>
-      <q-card>
-        <div class="text-h6 q-ma-sm">팔로워</div>
+      </q-card-section>
+    </q-card>
+    <q-card>
+      <q-card-section class="q-pa-sm">
+        <div class="text-h6">팔로워</div>
         <FollowList :users="followerList" :remove="onRemoveFollower" />
         <q-btn @click="loadMoreFollowers" v-if="hasMoreFollower" color="primary"
           >더보기</q-btn
         >
-      </q-card>
-    </q-page-container>
-  </q-page>
+      </q-card-section>
+    </q-card>
+  </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, nextTick } from "vue";
 import { useMeta } from "quasar";
-import { useUserStore } from "src/stores/users";
 import "../css/quasar-custom.scss";
 import FollowList from "../components/FollowList.vue";
+import { useUserStore } from "src/stores/users";
 
 const users = useUserStore();
 
@@ -52,27 +56,29 @@ const valid = ref(false);
 const nickname = ref("");
 const nicknameRules = ref([(v) => !!v || "닉네임을 입력하세요."]);
 
+onMounted(async () => {
+  Promise.all([
+    await users.loadFollowings({ offset: 0 }),
+    await users.loadFollowers({ offset: 0 }),
+  ]);
+  nextTick();
+});
+
 const followingList = computed(() => users.followingList);
 const followerList = computed(() => users.followerList);
+
 const hasMoreFollowing = computed(() => users.hasMoreFollowing);
 const hasMoreFollower = computed(() => users.hasMoreFollower);
-
-users.loadFollowings({ offset: 0 });
-users.loadFollowers({ offset: 0 });
-
-// console.log(hasMoreFollower.value, hasMoreFollowing.value);
 
 const onChangeNickname = () => {
   users.changeNickname({ nickname: nickname.value });
 };
 
-const onRemoveFollowing = (id) => {
-  // console.log("클릭한 대상의 id 값?", id);
-  users.removeFollowing(id);
+const onRemoveFollowing = (userId) => {
+  users.unfollowing({ userId });
 };
-const onRemoveFollower = (id) => {
-  // console.log("클릭한 대상의 id 값?", id);
-  users.removeFollower(id);
+const onRemoveFollower = (userId) => {
+  users.removeFollower({ userId });
 };
 
 const loadMoreFollowings = () => {

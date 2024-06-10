@@ -3,9 +3,8 @@ import { api } from "boot/axios";
 import { throttle } from "quasar";
 
 const url = `http://localhost:3085/post`;
+const userUrl = `http://localhost:3085/user`;
 const config = { withCredentials: true };
-
-const totalPosts = 51;
 const limit = 10;
 
 export const usePostStore = defineStore({
@@ -31,11 +30,21 @@ export const usePostStore = defineStore({
       this.imagePaths = [];
     },
     // todolist 삭제 함수부터는 확인 필요
-    loadPosts: throttle(async function () {
+    loadPosts: throttle(async function (payload) {
       try {
+        if (payload && payload.reset) {
+          const result = await api.get(`${url}s?limit=${limit}`);
+          const json = result.data;
+
+          this.mainPosts = json;
+          this.hasMorePost = json.length === limit;
+          return;
+        }
         if (this.hasMorePost) {
+          const lastPost = this.mainPosts[this.mainPosts.length - 1];
           const result = await api.get(
-            `${url}s?offset=${this.mainPosts.length}&limit=10`
+            // `${url}s?offset=${this.mainPosts.length}&limit=10`
+            `${url}s?lastId=${lastPost && lastPost.id}&limit=${limit}`
           );
           const json = result.data;
 
@@ -45,7 +54,37 @@ export const usePostStore = defineStore({
       } catch (err) {
         console.log(err);
       }
-    }, 2000),
+    }, 1500),
+    loadUserPosts: throttle(async function (payload) {
+      try {
+        if (payload && payload.reset) {
+          const result = await api.get(
+            `${userUrl}/${payload.userId}/posts?limit=${limit}`
+          );
+          const json = result.data;
+
+          this.mainPosts = json;
+          this.hasMorePost = json.length === limit;
+
+          return;
+        }
+        if (this.hasMorePost) {
+          const lastPost = this.mainPosts[this.mainPosts.length - 1];
+          const result = await api.get(
+            // `${url}s?offset=${this.mainPosts.length}&limit=10`
+            `${userUrl}/${payload.userId}/posts?lastId=${
+              lastPost && lastPost.id
+            }&limit=${limit}`
+          );
+          const json = result.data;
+
+          this.mainPosts = this.mainPosts.concat(json);
+          this.hasMorePost = json.length === limit;
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }, 1500),
     async removePost(payload) {
       try {
         await api.delete(`${url}/${payload.postId}`, config);
