@@ -32,13 +32,14 @@
         </template>
         <!-- {{ post.content }} -->
       </div>
+      <div>{{ $dayjs(post.createdAt).fromNow() }}</div>
     </div>
   </q-card-section>
 </template>
 <script setup>
 import { computed } from "vue";
-import PostImages from "./PostImages.vue";
 import { useUserStore } from "src/stores/users";
+import PostImages from "./PostImages.vue";
 
 const props = defineProps(["post"]);
 const post = props.post;

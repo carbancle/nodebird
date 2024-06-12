@@ -125,7 +125,7 @@ export const usePostStore = defineStore({
       } catch (err) {
         console.log(err);
       }
-    }, 1500),
+    }, 500),
     async removePost(payload) {
       try {
         await api.delete(`${url}/${payload.postId}`, config);

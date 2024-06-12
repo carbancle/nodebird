@@ -20,18 +20,18 @@ import { useRoute } from "vue-router";
 const $route = useRoute();
 const posts = usePostStore();
 
-onBeforeUnmount(() => {
-  window.removeEventListener("scroll", onScroll);
-});
-
-const loadPosts = async () => {
-  await posts.loadHashtagPosts({ hashtag: $route.params.id, reset: true });
-};
-
 onMounted(() => {
   Promise.all([loadPosts(), window.addEventListener("scroll", onScroll)]);
   nextTick();
 });
+
+onBeforeUnmount(() => {
+  window.removeEventListener("scroll", onScroll);
+});
+
+const loadPosts = () => {
+  posts.loadHashtagPosts({ hashtag: $route.params.id, reset: true });
+};
 
 const name = ref("Nuxt.js");
 
@@ -43,12 +43,12 @@ const hasMorePost = computed(() => posts.hasMorePost);
  * loadPost를 재실행해서 올바른 hashtag 검색값을 가져오도록 한다.
  */
 
-watch(
-  () => $route.params.id,
-  (newId, oldId) => {
-    loadPosts();
-  }
-);
+// watch(
+//   () => $route.params.id,
+//   (newId, oldId) => {
+//     loadPosts();
+//   }
+// );
 
 const onScroll = () => {
   if (

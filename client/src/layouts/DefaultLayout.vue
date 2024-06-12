@@ -30,7 +30,7 @@
           <login-form />
         </div>
         <div class="col-12 col-xs-12 col-md-8">
-          <router-view />
+          <router-view :key="$route.fullPath" />
         </div>
       </div>
     </q-page-container>
@@ -39,9 +39,10 @@
 
 <script setup>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import LoginForm from "../components/LoginForm.vue";
 
+const $route = useRoute();
 const $router = useRouter();
 
 const hashtag = ref("");
