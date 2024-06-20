@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const env = process.env.NODE_ENV || "development";
 const passport = require("passport");
 const session = require("express-session");
 const cookie = require("cookie-parser");
@@ -20,6 +21,7 @@ app.use(morgan("dev"));
 app.use(
   cors({
     origin: "http://localhost:9000",
+    origin: "http://146.56.176.225",
     credentials: true,
   })
 );
@@ -55,6 +57,12 @@ app.post("/post", (req, res) => {
   }
 });
 
-app.listen(3085, () => {
-  console.log(`백엔드 서버 ${3085}번 포트에서 작동중.`);
-});
+if (env === "development") {
+  app.listen(3085, () => {
+    console.log(`백엔드 서버 ${3085}번 포트에서 작동중.`);
+  });
+} else {
+  app.listen(80, () => {
+    console.log(`백엔드 서버 ${80}번 포트에서 작동중.`);
+  });
+}
