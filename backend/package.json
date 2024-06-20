@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "start": "cross-env PORT=80 NODE_ENV=production pm2 start app.js"
   },
   "author": "ZeroCho",
   "license": "ISC",
@@ -12,6 +13,7 @@
     "bcrypt": "^5.0.0",
     "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "express": "^4.17.1",
     "express-session": "^1.16.2",
     "morgan": "^1.9.1",
@@ -19,6 +21,7 @@
     "mysql2": "^1.6.5",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
+    "pm2": "^5.4.1",
     "sequelize": "^5.16.0"
   },
   "devDependencies": {
