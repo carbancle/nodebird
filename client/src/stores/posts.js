@@ -2,9 +2,15 @@ import { defineStore } from "pinia";
 import { api } from "boot/axios";
 import { throttle } from "quasar";
 
-const url = `http://localhost:3085/post`;
-const userUrl = `http://localhost:3085/user`;
-const hashtagUrl = `http://localhost:3085/hashtag`;
+const url = process.env.DEV
+  ? `http://localhost:3085/post`
+  : `http://130.162.135.214/post`;
+const userUrl = process.env.DEV
+  ? `http://localhost:3085/user`
+  : `http://130.162.135.214/user`;
+const hashtagUrl = process.env.DEV
+  ? `http://localhost:3085/hashtag`
+  : `http://130.162.135.214/hashtag`;
 const config = { withCredentials: true };
 const limit = 10;
 
