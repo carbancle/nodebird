@@ -1,30 +1,45 @@
 const express = require("express");
 const cors = require("cors");
-const env = process.env.NODE_ENV || "development";
 const passport = require("passport");
 const session = require("express-session");
 const cookie = require("cookie-parser");
 const morgan = require("morgan");
-
 const db = require("./models");
+const helmet = require("helmet");
+const hpp = require("hpp");
+
+const dev = process.env.NODE_ENV === "development";
+
 const passportConfig = require("./passport");
 const userRouter = require("./routes/user");
 const postRouter = require("./routes/post");
 const postsRouter = require("./routes/posts");
 const hashtagRouter = require("./routes/hashtag");
+
 const app = express();
 
 db.sequelize.sync();
 passportConfig();
 
-app.use(morgan("dev"));
-app.use(
-  cors({
-    origin: "http://localhost:9000",
-    origin: "http://146.56.176.225",
-    credentials: true,
-  })
-);
+if (dev) {
+  app.use(morgan("dev"));
+  app.use(
+    cors({
+      origin: "http://localhost:9000",
+      credentials: true,
+    })
+  );
+} else {
+  app.use(helmet());
+  app.use(hpp());
+  app.use(morgan("combined"));
+  app.use(
+    cors({
+      origin: "http://146.56.176.225",
+      credentials: true,
+    })
+  );
+}
 app.use("/", express.static("uploads"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -57,7 +72,7 @@ app.post("/post", (req, res) => {
   }
 });
 
-if (env === "development") {
+if (dev) {
   app.listen(3085, () => {
     console.log(`백엔드 서버 ${3085}번 포트에서 작동중.`);
   });
