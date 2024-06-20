@@ -8,7 +8,7 @@ const db = require("./models");
 const helmet = require("helmet");
 const hpp = require("hpp");
 
-const dev = process.env.NODE_ENV === "development";
+const prod = process.env.NODE_ENV === "production";
 
 const passportConfig = require("./passport");
 const userRouter = require("./routes/user");
@@ -21,21 +21,21 @@ const app = express();
 db.sequelize.sync();
 passportConfig();
 
-if (dev) {
-  app.use(morgan("dev"));
-  app.use(
-    cors({
-      origin: "http://localhost:9000",
-      credentials: true,
-    })
-  );
-} else {
-  app.use(helmet());
+if (prod) {
+  app.use(helmet({ contentSecurityPolicy: false }));
   app.use(hpp());
   app.use(morgan("combined"));
   app.use(
     cors({
       origin: "http://146.56.176.225",
+      credentials: true,
+    })
+  );
+} else {
+  app.use(morgan("dev"));
+  app.use(
+    cors({
+      origin: "http://localhost:9000",
       credentials: true,
     })
   );
@@ -72,12 +72,14 @@ app.post("/post", (req, res) => {
   }
 });
 
-if (dev) {
-  app.listen(3085, () => {
-    console.log(`백엔드 서버 ${3085}번 포트에서 작동중.`);
-  });
-} else {
+console.log(prod, "123123123123");
+
+if (prod) {
   app.listen(80, () => {
     console.log(`백엔드 서버 ${80}번 포트에서 작동중.`);
+  });
+} else {
+  app.listen(3085, () => {
+    console.log(`백엔드 서버 ${3085}번 포트에서 작동중.`);
   });
 }
