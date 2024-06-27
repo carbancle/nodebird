@@ -22,12 +22,14 @@ db.sequelize.sync();
 passportConfig();
 
 if (prod) {
-  app.use(helmet());
+  app.use(helmet({
+    crossOriginOpenerPolicy : false,
+  }));
   app.use(hpp());
   app.use(morgan("combined"));
   app.use(
     cors({
-      origin: "http://146.56.176.225/#/",
+      origin: "http://146.56.176.225",
       credentials: true,
     })
   );
