@@ -22,7 +22,7 @@ db.sequelize.sync();
 passportConfig();
 
 if (prod) {
-  app.use(helmet({ contentSecurityPolicy: false }));
+  app.use(helmet());
   app.use(hpp());
   app.use(morgan("combined"));
   app.use(
