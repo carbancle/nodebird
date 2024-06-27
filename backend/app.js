@@ -23,6 +23,9 @@ passportConfig();
 
 if (prod) {
   app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: false,
     crossOriginOpenerPolicy : false,
   }));
   app.use(hpp());
