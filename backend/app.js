@@ -22,13 +22,7 @@ db.sequelize.sync();
 passportConfig();
 
 if (prod) {
-  app.use(helmet({
-    originAgentCluster: false,
-    contentSecurityPolicy: false,
-    crossOriginEmbedderPolicy: false,
-    crossOriginResourcePolicy: false,
-    crossOriginOpenerPolicy : false,
-  }));
+  // app.use(helmet());
   app.use(hpp());
   app.use(morgan("combined"));
   app.use(
