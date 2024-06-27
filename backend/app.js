@@ -23,6 +23,7 @@ passportConfig();
 
 if (prod) {
   app.use(helmet({
+    originAgentCluster: false,
     contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
     crossOriginResourcePolicy: false,
