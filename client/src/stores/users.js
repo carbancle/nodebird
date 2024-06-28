@@ -58,36 +58,48 @@ export const useUserStore = defineStore({
       }
     },
     async signUp(payload) {
-      const data = {
-        email: payload.email,
-        nickname: payload.nickname,
-        password: payload.password,
-      };
-
-      const result = await api.post(`${url}`, data);
-      const json = result.data;
-
-      this.setMe(json);
+      try {
+        const data = {
+          email: payload.email,
+          nickname: payload.nickname,
+          password: payload.password,
+        };
+  
+        const result = await api.post(`${url}`, data);
+        const json = result.data;
+  
+        this.setMe(json);
+      } catch (err) {
+        console.error(err);
+      }
     },
     async login(payload) {
-      const data = {
-        email: payload.email,
-        password: payload.password,
-      };
-
-      const result = await api.post(`${url}/login`, data, config);
-      const json = result.data;
-
-      this.setMe(json);
-      isLogin.value = true;
-      localStorage.setItem("userState", isLogin.value);
+      try {
+        const data = {
+          email: payload.email,
+          password: payload.password,
+        };
+  
+        const result = await api.post(`${url}/login`, data, config);
+        const json = result.data;
+  
+        this.setMe(json);
+        isLogin.value = true;
+        localStorage.setItem("userState", isLogin.value);
+      } catch (err) {
+        console.error(err);
+      }
     },
     async logOut() {
-      const result = await api.post(`${url}/logout`, {}, config);
-      const json = result.data;
+      try {
+        const result = await api.post(`${url}/logout`, {}, config);
+        const json = result.data;
 
-      this.clearMe();
-      localStorage.removeItem("userState");
+        this.clearMe();
+        localStorage.removeItem("userState");
+      } catch (err) {
+        console.error(err);
+      }
     },
     // todolist > nuxt store 구조를 pinia store로 변경 해야함
     async changeNickname(payload) {
