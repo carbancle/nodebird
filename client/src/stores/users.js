@@ -4,7 +4,7 @@ import { ref } from "vue";
 
 const url = process.env.DEV
   ? `http://localhost:3085/user`
-  : `http://130.162.135.214/user`;
+  : `http://api.carbancle.kr/user`;
 const config = { withCredentials: true };
 const isLogin = ref(false);
 const limit = 3;

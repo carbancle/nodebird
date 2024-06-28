@@ -29,6 +29,10 @@ if (prod) {
     cors({
       origin: "http://146.56.176.225",
       credentials: true,
+    }),
+    cors({
+      origin: "http://carbancle.kr",
+      credentials: true,
     })
   );
 } else {

@@ -4,13 +4,13 @@ import { throttle } from "quasar";
 
 const url = process.env.DEV
   ? `http://localhost:3085/post`
-  : `http://130.162.135.214/post`;
+  : `http://api.carbancle.kr/post`;
 const userUrl = process.env.DEV
   ? `http://localhost:3085/user`
-  : `http://130.162.135.214/user`;
+  : `http://api.carbancle.kr/user`;
 const hashtagUrl = process.env.DEV
   ? `http://localhost:3085/hashtag`
-  : `http://130.162.135.214/hashtag`;
+  : `http://api.carbancle.kr/hashtag`;
 const config = { withCredentials: true };
 const limit = 10;
 
