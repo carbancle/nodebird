@@ -27,9 +27,6 @@ if (prod) {
   app.use(morgan("combined"));
   app.use(
     cors({
-      origin: "http://146.56.176.225",
-      credentials: true,
-    },{
       origin: "http://carbancle.kr",
       credentials: true,
     })
