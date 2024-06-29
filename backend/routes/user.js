@@ -149,7 +149,7 @@ router.post("/logout", isLoggedIn, (req, res, next) => {
   try {
     if (req.isAuthenticated()) {
       req.logout();
-      req.redirect("/");
+      res.redirect("/");
 
       // 0.6.0 버전 이후부터는 다음과 같이 사용한다고 함.
       // req.logout((err) => {
