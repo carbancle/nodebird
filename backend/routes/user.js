@@ -143,12 +143,21 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
   })(req, res, next);
 });
 
-router.post("/logout", isLoggedIn, (req, res) => {
+router.post("/logout", isLoggedIn, (req, res, next) => {
+  console.log("로그아웃 요청!!");
   // 실제 주소는 /user/logout
-  if (req.isAuthenticated()) {
-    req.logout();
-    req.session.destroy(); // 선택사항
-    return res.status(200).send("로그아웃 되었습니다.");
+  try {
+    if (req.isAuthenticated()) {
+      console.log("인증 확인!!");
+      req.logout();
+      console.log("로그아웃 완료");
+      req.session.destroy(); // 선택사항
+      console.log("세션 초기화");
+      return res.status(200).send("로그아웃 되었습니다.");
+    }
+  } catch (err) {
+    console.error(err);
+    next(err);
   }
 });
 
