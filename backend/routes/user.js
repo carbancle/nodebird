@@ -149,6 +149,7 @@ router.post("/logout", isLoggedIn, (req, res, next) => {
   try {
     if (req.isAuthenticated()) {
       req.logout();
+      req.session.destroy(); // 선택사항 최신버전 passport에는 기본적으로 session.destroy가 실행되는 듯하다.
       res.redirect("/");
 
       // 0.6.0 버전 이후부터는 다음과 같이 사용한다고 함.
@@ -156,7 +157,6 @@ router.post("/logout", isLoggedIn, (req, res, next) => {
       //   if (err) { return next(err);};
       //   res.redirect('/');
       // })
-      req.session.destroy(); // 선택사항
       console.log("인증 확인!!");
       return res.status(200).send("로그아웃 되었습니다.");
     }
