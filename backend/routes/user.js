@@ -148,11 +148,16 @@ router.post("/logout", isLoggedIn, (req, res, next) => {
   // 실제 주소는 /user/logout
   try {
     if (req.isAuthenticated()) {
-      console.log("인증 확인!!");
       req.logout();
-      console.log("로그아웃 완료");
+      req.redirect("/");
+
+      // 0.6.0 버전 이후부터는 다음과 같이 사용한다고 함.
+      // req.logout((err) => {
+      //   if (err) { return next(err);};
+      //   res.redirect('/');
+      // })
       req.session.destroy(); // 선택사항
-      console.log("세션 초기화");
+      console.log("인증 확인!!");
       return res.status(200).send("로그아웃 되었습니다.");
     }
   } catch (err) {
