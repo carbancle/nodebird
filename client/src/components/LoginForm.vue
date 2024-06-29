@@ -1,37 +1,35 @@
 <template>
-  <q-page>
-    <q-card class="q-ma-sm q-pa-sm" v-if="!me">
-      <q-form ref="form" @submit.prevent="onSubmitForm">
-        <q-input
-          v-model="email"
-          label="이메일"
-          type="email"
-          :rules="emailRules"
-          required
-        />
-        <q-input
-          v-model="password"
-          label="비밀번호"
-          type="password"
-          :rules="passwordRules"
-          required
-        />
-        <q-btn class="q-mr-md" color="green" type="submit">로그인</q-btn>
-        <q-btn to="/sign-up">회원가입</q-btn>
-      </q-form>
-    </q-card>
-    <q-card class="q-ma-sm q-pa-sm" v-else>
-      <div class="row items-center q-mb-md">
-        <div class="q-mr-md">{{ me.nickname }} 님 로그인되었습니다.</div>
-        <q-btn @click="onLogOut">로그아웃</q-btn>
-      </div>
-      <div class="row">
-        <div class="col">{{ me.Followings.length }} 팔로잉</div>
-        <div class="col">{{ me.Followers.length }} 팔로워</div>
-        <div class="col">{{ me.Posts.length }} 게시글</div>
-      </div>
-    </q-card>
-  </q-page>
+  <q-card class="q-ma-sm q-pa-sm" v-if="!me">
+    <q-form ref="form" @submit.prevent="onSubmitForm">
+      <q-input
+        v-model="email"
+        label="이메일"
+        type="email"
+        :rules="emailRules"
+        required
+      />
+      <q-input
+        v-model="password"
+        label="비밀번호"
+        type="password"
+        :rules="passwordRules"
+        required
+      />
+      <q-btn class="q-mr-md" color="green" type="submit">로그인</q-btn>
+      <q-btn to="/sign-up">회원가입</q-btn>
+    </q-form>
+  </q-card>
+  <q-card class="q-ma-sm q-pa-sm" v-else>
+    <div class="row items-center q-mb-md">
+      <div class="q-mr-md">{{ me.nickname }} 님 로그인되었습니다.</div>
+      <q-btn @click="onLogOut">로그아웃</q-btn>
+    </div>
+    <div class="row">
+      <div class="col">{{ me.Followings.length }} 팔로잉</div>
+      <div class="col">{{ me.Followers.length }} 팔로워</div>
+      <div class="col">{{ me.Posts.length }} 게시글</div>
+    </div>
+  </q-card>
 </template>
 
 <script setup>
