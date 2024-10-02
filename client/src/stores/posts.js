@@ -1,15 +1,15 @@
 import { defineStore } from "pinia";
 import { api } from "boot/axios";
 import { throttle } from "quasar";
-
+console.log(process.env.DEV, "11111111111111111111");
 const url = process.env.DEV
-  ? `http://localhost:3085/post`
+  ? `http://localhost:8080/post`
   : `http://api.carbancle.kr/post`;
 const userUrl = process.env.DEV
-  ? `http://localhost:3085/user`
+  ? `http://localhost:8080/user`
   : `http://api.carbancle.kr/user`;
 const hashtagUrl = process.env.DEV
-  ? `http://localhost:3085/hashtag`
+  ? `http://localhost:8080/hashtag`
   : `http://api.carbancle.kr/hashtag`;
 const config = { withCredentials: true };
 const limit = 10;

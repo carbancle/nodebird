@@ -3,7 +3,7 @@ import { api } from "boot/axios";
 import { ref } from "vue";
 
 const url = process.env.DEV
-  ? `http://localhost:3085/user`
+  ? `http://localhost:8080/user`
   : `http://api.carbancle.kr/user`;
 const config = { withCredentials: true };
 const isLogin = ref(false);
@@ -64,10 +64,10 @@ export const useUserStore = defineStore({
           nickname: payload.nickname,
           password: payload.password,
         };
-  
+
         const result = await api.post(`${url}`, data);
         const json = result.data;
-  
+
         this.setMe(json);
       } catch (err) {
         console.error(err);
@@ -79,10 +79,10 @@ export const useUserStore = defineStore({
           email: payload.email,
           password: payload.password,
         };
-  
+
         const result = await api.post(`${url}/login`, data, config);
         const json = result.data;
-  
+
         this.setMe(json);
         isLogin.value = true;
         localStorage.setItem("userState", isLogin.value);

@@ -1,0 +1,28 @@
+services:
+  express:
+    build: .
+    container_name: nodebird_backend
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      - mysql
+    networks:
+      - nodebird_network
+
+  mysql:
+    image: mysql:8.0
+    container_name: nodebird_mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - /data/mysql:/var/lib/mysql
+    env_file:
+      - .env
+    networks:
+      - nodebird_network
+
+networks:
+  nodebird_network:
+    driver: bridge

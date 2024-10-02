@@ -8,7 +8,12 @@ const db = require("./models");
 const helmet = require("helmet");
 const hpp = require("hpp");
 
-const prod = process.env.NODE_ENV === "production";
+const loadEnv = require("./utils/loadEnv");
+
+// 환경 변수 로드
+loadEnv();
+
+const port = process.env.NODE_ENV === "production" ? 8080 : 8081;
 
 const passportConfig = require("./passport");
 const userRouter = require("./routes/user");
@@ -21,7 +26,7 @@ const app = express();
 db.sequelize.sync();
 passportConfig();
 
-if (prod) {
+if (port == 8080) {
   app.use(helmet());
   app.use(hpp());
   app.use(morgan("combined"));
@@ -59,7 +64,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get("/", (req, res) => {
-  res.status(200).send("안녕 제로초");
+  res.status(200).send("제로초 강의를 참고하여 oracle cloud로 연결");
 });
 
 app.use("/user", userRouter);
@@ -72,14 +77,6 @@ app.post("/post", (req, res) => {
   }
 });
 
-console.log(prod, "123123123123");
-
-if (prod) {
-  app.listen(80, () => {
-    console.log(`백엔드 서버 ${80}번 포트에서 작동중.`);
-  });
-} else {
-  app.listen(3085, () => {
-    console.log(`백엔드 서버 ${3085}번 포트에서 작동중.`);
-  });
-}
+app.listen(port, () => {
+  console.log(`백엔드 서버 ${port}번 포트에서 작동중.`);
+});
