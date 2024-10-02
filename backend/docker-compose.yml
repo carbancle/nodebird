@@ -17,7 +17,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - /data/mysql:/var/lib/mysql
+      - /data/mysql/nodebird:/var/lib/mysql
     env_file:
       - .env
     networks:
