@@ -43,7 +43,7 @@
             style="display: inline-block"
           >
             <img
-              :src="`http://localhost:3085/${p}`"
+              :src="`http://localhost:8081/${p}`"
               :alt="p"
               style="width: 200px"
             />

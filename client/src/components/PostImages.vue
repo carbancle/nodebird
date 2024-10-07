@@ -2,7 +2,7 @@
   <div v-if="images.length === 0"></div>
   <div v-else-if="images.length === 1">
     <q-img
-      :src="`http://localhost:3085/${images[0].src}`"
+      :src="`http://localhost:8081/${images[0].src}`"
       contain
       initial-ratio="2"
       @click="zoomImages"
@@ -12,7 +12,7 @@
   <div class="row" v-else-if="images.length === 2">
     <div class="col">
       <q-img
-        :src="`http://localhost:3085/${images[0].src}`"
+        :src="`http://localhost:8081/${images[0].src}`"
         contain
         initial-ratio="2"
         @click="zoomImages"
@@ -20,7 +20,7 @@
     </div>
     <div class="col">
       <q-img
-        :src="`http://localhost:3085/${images[1].src}`"
+        :src="`http://localhost:8081/${images[1].src}`"
         contain
         initial-ratio="2"
         @click="zoomImages"
@@ -31,7 +31,7 @@
   <div class="row" v-else-if="images.length > 2">
     <div class="col">
       <q-img
-        :src="`http://localhost:3085/${images[0].src}`"
+        :src="`http://localhost:8081/${images[0].src}`"
         contain
         initial-ratio="2"
         @click="zoomImages"

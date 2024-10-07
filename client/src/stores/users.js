@@ -3,8 +3,8 @@ import { api } from "boot/axios";
 import { ref } from "vue";
 
 const url = process.env.DEV
-  ? `http://localhost:8080/user`
-  : `http://api.carbancle.kr/user`;
+  ? `http://localhost:8081/user`
+  : `http://api.carbancle.kr:8080/user`;
 const config = { withCredentials: true };
 const isLogin = ref(false);
 const limit = 3;
@@ -65,10 +65,10 @@ export const useUserStore = defineStore({
           password: payload.password,
         };
 
-        const result = await api.post(`${url}`, data);
-        const json = result.data;
+        await api.post(`${url}`, data);
 
-        this.setMe(json);
+        // 회원가입 성공 후 자동 로그인 처리
+        await this.login(payload);
       } catch (err) {
         console.error(err);
       }

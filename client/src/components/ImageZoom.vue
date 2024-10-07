@@ -24,7 +24,7 @@
           v-for="(img, index) in images"
           :key="img.src"
         >
-          <q-img :src="`http://localhost:3085/${img.src}`" />
+          <q-img :src="`http://localhost:8081/${img.src}`" />
         </q-carousel-slide>
       </q-carousel>
     </div>

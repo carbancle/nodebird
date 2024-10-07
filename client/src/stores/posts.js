@@ -3,14 +3,14 @@ import { api } from "boot/axios";
 import { throttle } from "quasar";
 console.log(process.env.DEV, "11111111111111111111");
 const url = process.env.DEV
-  ? `http://localhost:8080/post`
-  : `http://api.carbancle.kr/post`;
+  ? `http://localhost:8081/post`
+  : `http://api.carbancle.kr:8080/post`;
 const userUrl = process.env.DEV
-  ? `http://localhost:8080/user`
-  : `http://api.carbancle.kr/user`;
+  ? `http://localhost:8081/user`
+  : `http://api.carbancle.kr:8080/user`;
 const hashtagUrl = process.env.DEV
-  ? `http://localhost:8080/hashtag`
-  : `http://api.carbancle.kr/hashtag`;
+  ? `http://localhost:8081/hashtag`
+  : `http://api.carbancle.kr:8080/hashtag`;
 const config = { withCredentials: true };
 const limit = 10;
 
