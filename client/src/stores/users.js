@@ -2,9 +2,6 @@ import { defineStore } from "pinia";
 import { api } from "boot/axios";
 import { ref } from "vue";
 
-const url = process.env.DEV
-  ? `http://localhost:8081/user`
-  : `http://api.carbancle.kr:8080/user`;
 const config = { withCredentials: true };
 const isLogin = ref(false);
 const limit = 3;
@@ -35,7 +32,7 @@ export const useUserStore = defineStore({
         const userState = localStorage.getItem("userState");
         // console.log(userState);
         if (userState) {
-          const result = await api.get(url, config);
+          const result = await api.get('/user', config);
           const json = result.data;
           this.setMe(json);
         } else {
@@ -49,7 +46,7 @@ export const useUserStore = defineStore({
     },
     async loadOther(payload) {
       try {
-        const result = await api.get(`${url}/${payload.userId}`, config);
+        const result = await api.get(`user/${payload.userId}`, config);
         const json = result.data;
         console.log(json, "a");
         this.other = json;
@@ -65,7 +62,7 @@ export const useUserStore = defineStore({
           password: payload.password,
         };
 
-        await api.post(`${url}`, data);
+        await api.post(``, data);
 
         // 회원가입 성공 후 자동 로그인 처리
         await this.login(payload);
@@ -80,7 +77,7 @@ export const useUserStore = defineStore({
           password: payload.password,
         };
 
-        const result = await api.post(`${url}/login`, data, config);
+        const result = await api.post(`/user/login`, data, config);
         const json = result.data;
 
         this.setMe(json);
@@ -92,7 +89,7 @@ export const useUserStore = defineStore({
     },
     async logOut() {
       try {
-        const result = await api.post(`${url}/logout`, {}, config);
+        const result = await api.post(`/user/logout`, {}, config);
         const json = result.data;
 
         this.clearMe();
@@ -105,7 +102,7 @@ export const useUserStore = defineStore({
     async changeNickname(payload) {
       try {
         await api.patch(
-          `${url}/nickname`,
+          `/nickname`,
           { nickname: payload.nickname },
           config
         );
@@ -129,7 +126,7 @@ export const useUserStore = defineStore({
         if (payload && payload.offset === 0) offset = 0;
 
         const result = await api.get(
-          `${url}/${this.me.id}/followings?limit=${limit}&offset=${offset}`,
+          `/user/${this.me.id}/followings?limit=${limit}&offset=${offset}`,
           config
         );
         const json = result.data;
@@ -150,7 +147,7 @@ export const useUserStore = defineStore({
         if (payload && payload.offset === 0) offset = 0;
 
         const result = await api.get(
-          `${url}/${this.me.id}/followers?limit=3&offset=${offset}`,
+          `/user/${this.me.id}/followers?limit=3&offset=${offset}`,
           config
         );
         const json = result.data;
@@ -168,7 +165,7 @@ export const useUserStore = defineStore({
     async following(payload) {
       try {
         const result = await api.post(
-          `${url}/${payload.userId}/follow`,
+          `/user/${payload.userId}/follow`,
           payload,
           config
         );
@@ -181,7 +178,7 @@ export const useUserStore = defineStore({
     },
     async unfollowing(payload) {
       try {
-        await api.delete(`${url}/${payload.userId}/unfollow`, config);
+        await api.delete(`/user/${payload.userId}/unfollow`, config);
 
         let index = this.me.Followings.findIndex(
           (v) => v.id === payload.userId
@@ -195,7 +192,7 @@ export const useUserStore = defineStore({
     },
     async removeFollower(payload) {
       try {
-        await api.delete(`${url}/${payload.userId}/follower`, config);
+        await api.delete(`/user/${payload.userId}/follower`, config);
 
         let index = this.me.Followers.findIndex((v) => v.id === payload.userId);
         this.me.Followers.splice(index, 1);

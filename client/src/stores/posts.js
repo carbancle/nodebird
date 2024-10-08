@@ -1,16 +1,6 @@
 import { defineStore } from "pinia";
 import { api } from "boot/axios";
 import { throttle } from "quasar";
-console.log(process.env.DEV, "11111111111111111111");
-const url = process.env.DEV
-  ? `http://localhost:8081/post`
-  : `http://api.carbancle.kr:8080/post`;
-const userUrl = process.env.DEV
-  ? `http://localhost:8081/user`
-  : `http://api.carbancle.kr:8080/user`;
-const hashtagUrl = process.env.DEV
-  ? `http://localhost:8081/hashtag`
-  : `http://api.carbancle.kr:8080/hashtag`;
 const config = { withCredentials: true };
 const limit = 10;
 
@@ -30,7 +20,7 @@ export const usePostStore = defineStore({
         content: payload.content,
         image: this.imagePaths,
       };
-      const result = await api.post(`${url}`, data, config);
+      const result = await api.post(`/post`, data, config);
       const json = result.data;
 
       this.mainPosts.unshift(json);
@@ -39,7 +29,7 @@ export const usePostStore = defineStore({
     // todolist 삭제 함수부터는 확인 필요
     async loadPost(payload) {
       try {
-        const result = await api.get(`${url}/${payload}`);
+        const result = await api.get(`/post/${payload}`);
         const json = result.data;
 
         this.mainPosts = [json];
@@ -50,7 +40,7 @@ export const usePostStore = defineStore({
     loadPosts: throttle(async function (payload) {
       try {
         if (payload && payload.reset) {
-          const result = await api.get(`${url}s?limit=${limit}`);
+          const result = await api.get(`/posts?limit=${limit}`);
           const json = result.data;
 
           this.mainPosts = json;
@@ -60,8 +50,8 @@ export const usePostStore = defineStore({
         if (this.hasMorePost) {
           const lastPost = this.mainPosts[this.mainPosts.length - 1];
           const result = await api.get(
-            // `${url}s?offset=${this.mainPosts.length}&limit=10`
-            `${url}s?lastId=${lastPost && lastPost.id}&limit=${limit}`
+            // `/posts?offset=${this.mainPosts.length}&limit=10`
+            `/posts?lastId=${lastPost && lastPost.id}&limit=${limit}`
           );
           const json = result.data;
 
@@ -76,7 +66,7 @@ export const usePostStore = defineStore({
       try {
         if (payload && payload.reset) {
           const result = await api.get(
-            `${userUrl}/${payload.userId}/posts?limit=${limit}`
+            `/user/${payload.userId}/posts?limit=${limit}`
           );
           const json = result.data;
 
@@ -88,8 +78,8 @@ export const usePostStore = defineStore({
         if (this.hasMorePost) {
           const lastPost = this.mainPosts[this.mainPosts.length - 1];
           const result = await api.get(
-            // `${url}s?offset=${this.mainPosts.length}&limit=10`
-            `${userUrl}/${payload.userId}/posts?lastId=${
+            // `/posts?offset=${this.mainPosts.length}&limit=10`
+            `/user/${payload.userId}/posts?lastId=${
               lastPost && lastPost.id
             }&limit=${limit}`
           );
@@ -106,7 +96,7 @@ export const usePostStore = defineStore({
       try {
         if (payload && payload.reset) {
           const result = await api.get(
-            `${hashtagUrl}/${payload.hashtag}?limit=${limit}`
+            `/hashtag/${payload.hashtag}?limit=${limit}`
           );
           const json = result.data;
 
@@ -118,8 +108,8 @@ export const usePostStore = defineStore({
         if (this.hasMorePost) {
           const lastPost = this.mainPosts[this.mainPosts.length - 1];
           const result = await api.get(
-            // `${url}s?offset=${this.mainPosts.length}&limit=10`
-            `${hashtagUrl}/${payload.hashtag}?lastId=${
+            // `/posts?offset=${this.mainPosts.length}&limit=10`
+            `/hashtag/${payload.hashtag}?lastId=${
               lastPost && lastPost.id
             }&limit=${limit}`
           );
@@ -134,7 +124,7 @@ export const usePostStore = defineStore({
     }, 500),
     async removePost(payload) {
       try {
-        await api.delete(`${url}/${payload.postId}`, config);
+        await api.delete(`/post/${payload.postId}`, config);
 
         const index = this.mainPosts.findIndex((v) => v.id === payload.postId);
         this.mainPosts.splice(index, 1);
@@ -145,7 +135,7 @@ export const usePostStore = defineStore({
     async addComment(payload) {
       try {
         const result = await api.post(
-          `${url}/${payload.postId}/comment`,
+          `/post/${payload.postId}/comment`,
           {
             content: payload.content,
             imagePaths: this.imagePaths,
@@ -162,7 +152,7 @@ export const usePostStore = defineStore({
     },
     async loadComments(payload) {
       try {
-        const result = api.get(`${url}/${payload.postId}/comments`);
+        const result = api.get(`/post/${payload.postId}/comments`);
         const json = result.data;
 
         const index = this.mainPosts.findIndex((v) => v.id === json.postId);
@@ -174,7 +164,7 @@ export const usePostStore = defineStore({
     async uploadImages(payload) {
       console.log(payload, " :: payload");
 
-      const result = await api.post(`${url}/images`, payload, config);
+      const result = await api.post(`/post/images`, payload, config);
       const json = result.data;
 
       this.imagePaths = this.imagePaths.concat(json);
@@ -185,7 +175,7 @@ export const usePostStore = defineStore({
     async retweet(payload) {
       try {
         const result = await api.post(
-          `${url}/${payload.postId}/retweet`,
+          `/post/${payload.postId}/retweet`,
           payload,
           config
         );
@@ -199,7 +189,7 @@ export const usePostStore = defineStore({
     async likePost(payload) {
       try {
         const result = await api.post(
-          `${url}/${payload.postId}/like`,
+          `/post/${payload.postId}/like`,
           payload,
           config
         );
@@ -217,7 +207,7 @@ export const usePostStore = defineStore({
     async unlikePost(payload) {
       try {
         const result = await api.delete(
-          `${url}/${payload.postId}/like`,
+          `/post/${payload.postId}/like`,
           config
         );
         const json = result.data;

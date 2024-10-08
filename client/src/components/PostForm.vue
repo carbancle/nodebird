@@ -43,7 +43,7 @@
             style="display: inline-block"
           >
             <img
-              :src="`http://localhost:8081/${p}`"
+              :src="`${url}/${p}`"
               :alt="p"
               style="width: 200px"
             />
@@ -60,6 +60,8 @@
 import { ref, computed } from "vue";
 import { usePostStore } from "src/stores/posts";
 import "../css/quasar-custom.scss";
+
+const url = process.env.API_URL;
 
 const posts = usePostStore();
 

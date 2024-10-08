@@ -24,7 +24,7 @@
           v-for="(img, index) in images"
           :key="img.src"
         >
-          <q-img :src="`http://localhost:8081/${img.src}`" />
+          <q-img :src="`${url}/${img.src}`" />
         </q-carousel-slide>
       </q-carousel>
     </div>
@@ -34,6 +34,8 @@
 import { ref } from "vue";
 
 const slide = ref(0);
+
+const url = process.env.API_URL;
 
 const props = defineProps({
   images: {
