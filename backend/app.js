@@ -27,7 +27,7 @@ db.sequelize.sync();
 passportConfig();
 
 if (port == 8080) {
-  app.use(helmet());
+  app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
   app.use(hpp());
   app.use(morgan("combined"));
   app.use(
