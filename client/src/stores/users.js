@@ -46,7 +46,7 @@ export const useUserStore = defineStore({
     },
     async loadOther(payload) {
       try {
-        const result = await api.get(`user/${payload.userId}`, config);
+        const result = await api.get(`/user/${payload.userId}`, config);
         const json = result.data;
         console.log(json, "a");
         this.other = json;
@@ -62,7 +62,7 @@ export const useUserStore = defineStore({
           password: payload.password,
         };
 
-        await api.post(``, data);
+        await api.post(`/user`, data);
 
         // 회원가입 성공 후 자동 로그인 처리
         await this.login(payload);
@@ -102,7 +102,7 @@ export const useUserStore = defineStore({
     async changeNickname(payload) {
       try {
         await api.patch(
-          `/nickname`,
+          `/user/nickname`,
           { nickname: payload.nickname },
           config
         );
