@@ -61,15 +61,14 @@ const posts = usePostStore();
 
 const props = defineProps(["post"]);
 const post = props.post;
-// console.log(post);
 
 const commentOpened = ref(false);
 
 const onToggleComment = async () => {
   commentOpened.value = !commentOpened.value;
-  if (!commentOpened.value) {
-    await posts.loadComments({ postId: post.id });
-  }
+  // if (!commentOpened.value) {
+  //   await posts.loadComments({ postId: post.id });
+  // }
 };
 const onEditPost = () => {};
 const onRemovePost = async () => {

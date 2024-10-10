@@ -143,17 +143,24 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
   })(req, res, next);
 });
 
-router.post("/logout", isLoggedIn, (req, res, next) => {
+router.post("/logout", (req, res, next) => {
   console.log("로그아웃 요청!!");
   // 실제 주소는 /user/logout
-  if (req.isAuthenticated()) {
-    req.logout((err) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+
+    req.session.destroy((err) => {
       if (err) {
-        return next(err);
+        return res.status(500).send("Failed to destroy session");
       }
-      res.redirect("/");
     });
-  }
+
+    res.clearCookie("connect.sid");
+    // return res.status(200).send("Logged out")
+    return res.redirect("/");
+  });
 });
 
 router.get("/:id/posts", async (req, res, next) => {

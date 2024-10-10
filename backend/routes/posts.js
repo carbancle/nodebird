@@ -43,6 +43,16 @@ router.get("/", async (req, res, next) => {
             },
           ],
         },
+        {
+          model: db.Comment,
+          as: "Comments",
+          include: [
+            {
+              model: db.User,
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
       ],
       order: [["createdAt", "DESC"]],
       limit: parseInt(req.query.limit, 10) || 10,

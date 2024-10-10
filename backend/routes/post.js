@@ -111,6 +111,16 @@ router.get("/:id", async (req, res, next) => {
             },
           ],
         },
+        {
+          model: db.Comment,
+          as: "Comments",
+          include: [
+            {
+              model: db.User,
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
       ],
     });
     res.json(post);

@@ -144,19 +144,23 @@ export const usePostStore = defineStore({
         );
         const json = result.data;
 
-        const index = this.mainPosts.findIndex((v) => v.id === json.postId);
+        const index = this.mainPosts.findIndex((v) => v.id === payload.postId);
         this.mainPosts[index].Comments.unshift(json);
       } catch (err) {
         console.log(err);
       }
     },
     async loadComments(payload) {
+      console.log("실행~", payload);
       try {
+        console.log("실행!", payload);
         const result = api.get(`/post/${payload.postId}/comments`);
         const json = result.data;
 
-        const index = this.mainPosts.findIndex((v) => v.id === json.postId);
+        const index = this.mainPosts.findIndex((v) => v.id === payload.postId);
+        console.log("실행~!", payload);
         this.mainPosts[index].Comments = json;
+        console.log(this.mainPosts[index].Comments);
       } catch (err) {
         console.log(err);
       }
@@ -206,10 +210,7 @@ export const usePostStore = defineStore({
     },
     async unlikePost(payload) {
       try {
-        const result = await api.delete(
-          `/post/${payload.postId}/like`,
-          config
-        );
+        const result = await api.delete(`/post/${payload.postId}/like`, config);
         const json = result.data;
 
         const index = this.mainPosts.findIndex((v) => v.id === payload.postId);

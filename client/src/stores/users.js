@@ -32,16 +32,18 @@ export const useUserStore = defineStore({
         const userState = localStorage.getItem("userState");
         // console.log(userState);
         if (userState) {
-          const result = await api.get('/user', config);
+          const result = await api.get("/user", config);
           const json = result.data;
           this.setMe(json);
         } else {
-          localStorage.removeItem("userState");
-          isLogin.value = false;
-          this.me = null;
+          this.logOut();
         }
       } catch (err) {
-        console.log(err);
+        console.error(err);
+
+        if (err.response && err.response.status === 401) {
+          this.logOut(); // 세션 만료 시 로그아웃 처리
+        }
       }
     },
     async loadOther(payload) {
